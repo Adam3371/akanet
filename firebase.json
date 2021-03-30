@@ -1,0 +1,11 @@
+{
+  "hosting": {
+    "public": "build/web",
+    "site": "akanet-muc",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  }
+}
