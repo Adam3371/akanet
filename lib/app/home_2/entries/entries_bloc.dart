@@ -1,11 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:akanet/app/home/entries/daily_jobs_details.dart';
-import 'package:akanet/app/home/entries/entries_list_tile.dart';
-import 'package:akanet/app/home/entries/entry_job.dart';
-import 'package:akanet/app/home/job_entries/format.dart';
-import 'package:akanet/app/home/models/entry.dart';
-import 'package:akanet/app/home/models/job.dart';
+import 'package:akanet/app/home_2/entries/daily_jobs_details.dart';
+import 'package:akanet/app/home_2/entries/entries_list_tile.dart';
+import 'package:akanet/app/home_2/entries/entry_job.dart';
+import 'package:akanet/app/home_2/job_entries/format.dart';
+import 'package:akanet/app/home_2/models/entry.dart';
+import 'package:akanet/app/home_2/models/job.dart';
 import 'package:akanet/services/database.dart';
 
 class EntriesBloc {

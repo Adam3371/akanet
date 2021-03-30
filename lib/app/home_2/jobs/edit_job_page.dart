@@ -1,6 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:akanet/app/home/models/job.dart';
+import 'package:akanet/app/home_2/models/job.dart';
 import 'package:akanet/common_widgets/show_alert_dialog.dart';
 import 'package:akanet/common_widgets/show_exception_alert_dialog.dart';
 import 'package:akanet/services/database.dart';

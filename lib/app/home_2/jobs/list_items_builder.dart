@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:akanet/app/home/jobs/empty_content.dart';
+import 'package:akanet/app/home_2/jobs/empty_content.dart';
 
 typedef ItemWidgetBuilder<T> = Widget Function(BuildContext context, T item);
 

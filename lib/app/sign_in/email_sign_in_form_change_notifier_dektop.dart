@@ -111,7 +111,6 @@ class _EmailSignInFormChangeNotifierDesktopState
       ),
     );
   }
-
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;

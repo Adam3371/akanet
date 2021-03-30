@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:akanet/app/home/entries/entries_bloc.dart';
-import 'package:akanet/app/home/entries/entries_list_tile.dart';
-import 'package:akanet/app/home/jobs/list_items_builder.dart';
+import 'package:akanet/app/home_2/entries/entries_bloc.dart';
+import 'package:akanet/app/home_2/entries/entries_list_tile.dart';
+import 'package:akanet/app/home_2/jobs/list_items_builder.dart';
 import 'package:akanet/services/database.dart';
 
 class EntriesPage extends StatelessWidget {

@@ -1,11 +1,11 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:akanet/app/home/job_entries/job_entries_page.dart';
-import 'package:akanet/app/home/jobs/edit_job_page.dart';
-import 'package:akanet/app/home/jobs/job_list_tile.dart';
-import 'package:akanet/app/home/jobs/list_items_builder.dart';
-import 'package:akanet/app/home/models/job.dart';
+import 'package:akanet/app/home_2/job_entries/job_entries_page.dart';
+import 'package:akanet/app/home_2/jobs/edit_job_page.dart';
+import 'package:akanet/app/home_2/jobs/job_list_tile.dart';
+import 'package:akanet/app/home_2/jobs/list_items_builder.dart';
+import 'package:akanet/app/home_2/models/job.dart';
 import 'package:akanet/common_widgets/show_exception_alert_dialog.dart';
 import 'package:akanet/services/database.dart';
 

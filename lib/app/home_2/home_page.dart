@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:akanet/app/home_2/account/account_page.dart';
-import 'package:akanet/app/home_2/cupertino_scaffold.dart';
+import 'package:akanet/app/home_2/cupertino_home_scaffold.dart';
 import 'package:akanet/app/home_2/entries/entries_page.dart';
 import 'package:akanet/app/home_2/jobs/jobs_page.dart';
 import 'package:akanet/app/home_2/tab_item.dart';
