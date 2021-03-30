@@ -1,6 +1,6 @@
 import 'package:meta/meta.dart';
-import 'package:akanet/app/home/models/entry.dart';
-import 'package:akanet/app/home/models/job.dart';
+import 'package:akanet/app/home_2/models/entry.dart';
+import 'package:akanet/app/home_2/models/job.dart';
 import 'package:akanet/services/api_path.dart';
 import 'package:akanet/services/firestore_service.dart';
 

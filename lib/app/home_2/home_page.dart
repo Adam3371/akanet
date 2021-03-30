@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:akanet/app/home/account/account_page.dart';
-import 'package:akanet/app/home/cupertino_home_scaffold.dart';
-import 'package:akanet/app/home/entries/entries_page.dart';
-import 'package:akanet/app/home/jobs/jobs_page.dart';
-import 'package:akanet/app/home/tab_item.dart';
+import 'package:akanet/app/home_2/account/account_page.dart';
+import 'package:akanet/app/home_2/cupertino_scaffold.dart';
+import 'package:akanet/app/home_2/entries/entries_page.dart';
+import 'package:akanet/app/home_2/jobs/jobs_page.dart';
+import 'package:akanet/app/home_2/tab_item.dart';
 
 class HomePage extends StatefulWidget {
   @override
