@@ -131,7 +131,7 @@ class SignInPage extends StatelessWidget {
     return SingleChildScrollView(
       child: Container(
         width: screenSize.width,
-        height: screenSize.height/1.05,
+        height: screenSize.height / 1.05,
         decoration: BoxDecoration(
           image: DecorationImage(
             image: AssetImage("images/gruppenbild.jpg"),
@@ -167,7 +167,9 @@ class SignInPage extends StatelessWidget {
                         child: _buildHeader(screenSize),
                       ),
                       SizedBox(
-                        height: screenSize.height > 600 ? screenSize.height / 2.5 : screenSize.height / 5,
+                        height: screenSize.height > 500
+                            ? screenSize.height / 4
+                            : screenSize.height / 100,
                       ),
                       Padding(
                         padding: const EdgeInsets.all(20.0),
@@ -175,8 +177,9 @@ class SignInPage extends StatelessWidget {
                           text: "Sign in with email",
                           // color: Colors.teal[600],
                           // textColor: Colors.white,
-                          onPressed:
-                              isLoading ? null : () => _signInWithEmail(context),
+                          onPressed: isLoading
+                              ? null
+                              : () => _signInWithEmail(context),
                         ),
                       ),
                       SizedBox(
@@ -194,7 +197,7 @@ class SignInPage extends StatelessWidget {
                         padding: const EdgeInsets.all(20.0),
                         child: SignInButton(
                           text: "Request Credentials",
-                          color: Colors.black26,
+                          color: Colors.black54,
                           textColor: Colors.white,
                           onPressed: isLoading
                               ? null

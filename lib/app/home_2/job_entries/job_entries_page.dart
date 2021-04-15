@@ -22,8 +22,8 @@ class JobEntriesPage extends StatelessWidget {
   final Database database;
   final Job job;
 
-  static Future<void> show(BuildContext context, Job job) async {
-    final database = Provider.of<Database>(context, listen: false);
+  static Future<void> show(BuildContext context, Database database, Job job) async {
+    // final database = Provider.of<Database>(context, listen: false);
     await Navigator.of(context).push(
       CupertinoPageRoute(
         fullscreenDialog: false,
