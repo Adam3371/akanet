@@ -17,7 +17,7 @@ import 'package:akanet/services/database.dart';
 class JobEntriesPage extends StatelessWidget {
   const JobEntriesPage({
     @required this.database,
-    @required this.job,
+    this.job,
   });
   final Database database;
   final Job job;

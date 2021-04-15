@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.indigo,
         ),
         // home: LandingPage(),
-        initialRoute: "/",
+        // initialRoute: "/",
         routes: {
           "/": (context) => LandingPage(),
           // TimeTrackerHomePage.routeName: (context) => TimeTrackerHomePage(),
@@ -36,3 +36,4 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+

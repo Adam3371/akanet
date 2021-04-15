@@ -49,6 +49,15 @@ class _TimeTrackerHomePageState extends State<TimeTrackerHomePage> {
         //     : auth.currentUser.email.toString(),
         // ),
         elevation: 5.0,
+        actions: [
+          IconButton(
+            onPressed: () {
+              print("Here2");
+              EditJobPage.show(context, database: widget.database);
+            },
+            icon: Icon(Icons.add),
+          ),
+        ],
       ),
       body: Container(
         decoration: BoxDecoration(
@@ -69,17 +78,14 @@ class _TimeTrackerHomePageState extends State<TimeTrackerHomePage> {
                 padding: EdgeInsets.all(40),
                 child: Container(
                   height: double.infinity,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(30.0)),
-                      color: Colors.black.withOpacity(0.5),
-                    ),
-                    child: _listBuilder(context)),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                    color: Colors.black.withOpacity(0.5),
+                  ),
+                  child: _listBuilder(context),
+                ),
               ),
-            ),
-            Container(
-              width: screenSize.width / 4,
-              // color: Colors.blue,
-            ),
+            )
           ],
         ),
       ),
