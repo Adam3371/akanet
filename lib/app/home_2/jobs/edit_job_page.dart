@@ -1,4 +1,5 @@
 import 'package:akanet/app/home_2/models/project.dart';
+import 'package:akanet/app/home_2/models/sub_project.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -6,8 +7,6 @@ import 'package:akanet/app/home_2/models/job.dart';
 import 'package:akanet/common_widgets/show_alert_dialog.dart';
 import 'package:akanet/common_widgets/show_exception_alert_dialog.dart';
 import 'package:akanet/services/database.dart';
-
-import 'list_items_builder.dart';
 
 class EditJobPage extends StatefulWidget {
   const EditJobPage({Key key, @required this.database, this.job})
@@ -40,7 +39,9 @@ class _EditJobPageState extends State<EditJobPage> {
 
   String _name;
   int _ratePerHour;
-  int _projectId;
+  String _project;
+  String _subProject;
+  String _subItemId;
 
   @override
   void initState() {
@@ -153,33 +154,84 @@ class _EditJobPageState extends State<EditJobPage> {
         ),
         onSaved: (value) => _ratePerHour = int.tryParse(value) ?? 0,
       ),
-      StreamBuilder<List<Project>>(
-        stream: widget.database.projectsStream(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData)
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          final List<Project> items = snapshot.data;
-
-          for (int i = 0; i < items.length; i++) {
-            print("${items[i].name}");
-          }
-
-          return DropdownButton(
-            onChanged: (_) {},
-            value: _projectId,
-            hint: Text('Choose project'),
-            isDense: true,
-            items: items.map((item) {
-              return DropdownMenuItem<String>(
-                child: Text(item.name),
-                value: item.id.toString(),
+      SizedBox(
+        height: 40,
+      ),
+      Row(
+        children: [
+          StreamBuilder<List<Project>>(
+            stream: widget.database.projectsStream(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData)
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              final List<Project> items = snapshot.data;
+              for (int i = 0; i < items.length; i++) {
+                print("${items[i].name}");
+              }
+              return DropdownButton(
+                onChanged: (valueSelectedByUser) {
+                  setState(
+                    () {
+                      print("--------" + valueSelectedByUser);
+                      _project = valueSelectedByUser;
+                      _subProject = null;
+                      _subItemId = valueSelectedByUser;
+                    },
+                  );
+                },
+                value: _project,
+                hint: Text('Choose project'),
+                isDense: true,
+                items: items.map(
+                  (item) {
+                    return DropdownMenuItem<String>(
+                      child: Text(item.name),
+                      value: item.id,
+                    );
+                  },
+                ).toList(),
               );
-            }).toList(),
-          );
-        },
-      )
+            },
+          ),
+          StreamBuilder<List<SubProject>>(
+            stream: widget.database.subProjectStream(_subItemId),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData)
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              final List<SubProject> subItems = snapshot.data;
+              for (int i = 0; i < subItems.length; i++) {
+                print("${subItems[i].name}");
+              }
+
+              return DropdownButton(
+                onChanged: (valueSelectedByUser) {
+                  setState(
+                    () {
+                      print("--------" + valueSelectedByUser);
+                      _subProject = valueSelectedByUser;
+                    },
+                  );
+                },
+                value: _subProject,
+                hint: Text('Choose project'),
+                isDense: true,
+                items: subItems.map(
+                  (subItem) {
+                    return DropdownMenuItem<String>(
+                      child: Text(subItem.name),
+                      value: subItem.id,
+                    );
+                  },
+                ).toList(),
+              );
+            },
+          ),
+        ],
+      ),
     ];
   }
 }

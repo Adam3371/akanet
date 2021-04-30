@@ -12,10 +12,17 @@ class JobListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(job.name),
-      onTap: onTap,
-      trailing: Icon(Icons.chevron_right),
+    return Row(
+      children: [
+        Expanded(
+          child: ListTile(
+            title: Text(job.name),
+            subtitle: Text(job.ratePerHour.toString()),
+            onTap: onTap,
+            trailing: Icon(Icons.chevron_right),
+          ),
+        ),
+      ],
     );
   }
 }

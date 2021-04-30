@@ -39,7 +39,7 @@ class ListItemsBuilder<T> extends StatelessWidget {
       itemBuilder: (context, index) {
         if (index == 0 || index == items.length + 1) {
           return Container(
-            height: 10,
+            height: 30,
           );
         }
         return itemBuilder(context, items[index - 1]);

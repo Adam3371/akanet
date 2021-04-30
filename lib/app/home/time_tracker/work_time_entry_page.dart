@@ -1,24 +1,50 @@
-import 'package:akanet/app/home_2/job_entries/format.dart';
-import 'package:akanet/app/home_2/models/entry.dart';
+import 'package:akanet/app/home_2/models/project.dart';
+import 'package:akanet/app/home_2/models/sub_project.dart';
 import 'package:akanet/common_widgets/date_time_picker.dart';
-import 'package:akanet/services/database.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:akanet/app/home_2/models/job.dart';
+import 'package:akanet/common_widgets/show_exception_alert_dialog.dart';
+import 'package:akanet/services/database.dart';
 
 class WorkTimeEntryPage extends StatefulWidget {
-  static const routeName = "/WorkTimeEntry";
+  const WorkTimeEntryPage({Key key, @required this.database, this.job})
+      : super(key: key);
+  final Database database;
+  final Job job;
+
+  static Future<void> show(
+    BuildContext context, {
+    Database database,
+    Job job,
+  }) async {
+    await Navigator.of(context, rootNavigator: true).push(
+      MaterialPageRoute(
+        builder: (context) => WorkTimeEntryPage(
+          database: database,
+          job: job,
+        ),
+        fullscreenDialog: true,
+      ),
+    );
+  }
 
   @override
   _WorkTimeEntryPageState createState() => _WorkTimeEntryPageState();
 }
 
-
 class _WorkTimeEntryPageState extends State<WorkTimeEntryPage> {
+  final _formKey = GlobalKey<FormState>();
+
+  String _name;
+  int _ratePerHour;
+  String _project;
+  String _subProject;
+  String _subItemId;
+
   DateTime _startDate;
   TimeOfDay _startTime;
-  DateTime _endDate;
-  TimeOfDay _endTime;
-  String _comment;
-
 
   @override
   void initState() {
@@ -26,27 +52,50 @@ class _WorkTimeEntryPageState extends State<WorkTimeEntryPage> {
     final start = DateTime.now();
     _startDate = DateTime(start.year, start.month, start.day);
     _startTime = TimeOfDay.fromDateTime(start);
-
-    final end = DateTime.now();
-    _endDate = DateTime(end.year, end.month, end.day);
-    _endTime = TimeOfDay.fromDateTime(end);
-
-    _comment = '';
+    if (widget.job != null) {
+      _name = widget.job.name;
+      _ratePerHour = widget.job.ratePerHour;
+    }
   }
 
-  Entry _entryFromState() {
-    final start = DateTime(_startDate.year, _startDate.month, _startDate.day,
-        _startTime.hour, _startTime.minute);
-    final end = DateTime(_endDate.year, _endDate.month, _endDate.day,
-        _endTime.hour, _endTime.minute);
-    final id = documentIdFromCurrentDate();
-    return Entry(
-      id: id,
-      jobId: "1",
-      start: start,
-      end: end,
-      comment: _comment,
-    );
+  bool _validateAndSaveForm() {
+    final form = _formKey.currentState;
+    if (form.validate()) {
+      form.save();
+      return true;
+    }
+    return false;
+  }
+
+  Future<void> _submit() async {
+    if (_validateAndSaveForm()) {
+      try {
+        final jobs = await widget.database.jobsStream().first;
+        final allNames = jobs.map((job) => job.name).toList();
+        if (widget.job != null) {
+          allNames.remove(widget.job.name);
+        }
+        // if (allNames.contains(_name)) {
+        //   showAlertDialog(
+        //     context,
+        //     title: 'Name already used',
+        //     content: 'Please choose a different job name',
+        //     defaultActionText: 'OK',
+        //   );
+        // } else {
+        final id = widget.job?.id ?? documentIdFromCurrentDate();
+        final job = Job(id: id, name: _name, ratePerHour: _ratePerHour);
+        await widget.database.setJob(job);
+        Navigator.of(context).pop();
+        // }
+      } on FirebaseException catch (e) {
+        showExceptionAlertDialog(
+          context,
+          title: 'Operation failed',
+          exception: e,
+        );
+      }
+    }
   }
 
   @override
@@ -54,38 +103,47 @@ class _WorkTimeEntryPageState extends State<WorkTimeEntryPage> {
     return Scaffold(
       appBar: AppBar(
         elevation: 2.0,
-        title: Text("job.name"),
+        title: Text(widget.job == null ? 'New Job' : 'Edit Job'),
         actions: <Widget>[
           TextButton(
             child: Text(
-              'Update',
-              style: TextStyle(fontSize: 18.0, color: Colors.white),
+              'Save',
+              style: TextStyle(fontSize: 18, color: Colors.white),
             ),
-            onPressed: () {},
-          )
+            onPressed: _submit,
+          ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Container(
-          padding: EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              _buildStartDate(),
-              _buildEndDate(),
-              SizedBox(height: 8.0),
-              _buildDuration(),
-              SizedBox(height: 8.0),
-              _buildComment(),
-            ],
+      body: _buildContents(),
+      backgroundColor: Colors.grey[200],
+    );
+  }
+
+  Widget _buildContents() {
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Card(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: _buildForm(),
           ),
         ),
       ),
     );
   }
 
-    Widget _buildStartDate() {
+  Widget _buildForm() {
+    return Form(
+      key: _formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: _buildFormChildren(),
+      ),
+    );
+  }
+
+  Widget _buildStartDate() {
     return DateTimePicker(
       labelText: 'Start',
       selectedDate: _startDate,
@@ -95,45 +153,102 @@ class _WorkTimeEntryPageState extends State<WorkTimeEntryPage> {
     );
   }
 
-  Widget _buildEndDate() {
-    return DateTimePicker(
-      labelText: 'End',
-      selectedDate: _endDate,
-      selectedTime: _endTime,
-      selectDate: (date) => setState(() => _endDate = date),
-      selectTime: (time) => setState(() => _endTime = time),
-    );
-  }
-
-  Widget _buildDuration() {
-    final currentEntry = _entryFromState();
-    final durationFormatted = Format.hours(currentEntry.durationInHours);
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: <Widget>[
-        Text(
-          'Duration: $durationFormatted',
-          style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w500),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-      ],
-    );
-  }
-
-  Widget _buildComment() {
-    return TextField(
-      keyboardType: TextInputType.text,
-      maxLength: 50,
-      controller: TextEditingController(text: _comment),
-      decoration: InputDecoration(
-        labelText: 'Comment',
-        labelStyle: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w500),
+  List<Widget> _buildFormChildren() {
+    return [
+      _buildStartDate(),
+      TextFormField(
+        decoration: InputDecoration(labelText: 'Description'),
+        initialValue: _name,
+        validator: (value) => value.isNotEmpty ? null : 'Name can\'t be empty',
+        onSaved: (value) => _name = value,
       ),
-      style: TextStyle(fontSize: 20.0, color: Colors.black),
-      maxLines: null,
-      onChanged: (comment) => _comment = comment,
-    );
-  
-}
+      TextFormField(
+        decoration: InputDecoration(labelText: 'Number of hours (30min = 0,5)'),
+        initialValue: _ratePerHour != null ? '$_ratePerHour' : null,
+        keyboardType: TextInputType.numberWithOptions(
+          signed: false,
+          decimal: false,
+        ),
+        onSaved: (value) => _ratePerHour = int.tryParse(value) ?? 0,
+      ),
+      SizedBox(
+        height: 40,
+      ),
+      Row(
+        children: [
+          StreamBuilder<List<Project>>(
+            stream: widget.database.projectsStream(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData)
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              final List<Project> items = snapshot.data;
+              for (int i = 0; i < items.length; i++) {
+                print("${items[i].name}");
+              }
+              return DropdownButton(
+                onChanged: (valueSelectedByUser) {
+                  setState(
+                    () {
+                      print("--------" + valueSelectedByUser);
+                      _project = valueSelectedByUser;
+                      _subProject = null;
+                      _subItemId = valueSelectedByUser;
+                    },
+                  );
+                },
+                value: _project,
+                hint: Text('Choose project'),
+                isDense: true,
+                items: items.map(
+                  (item) {
+                    return DropdownMenuItem<String>(
+                      child: Text(item.name),
+                      value: item.id,
+                    );
+                  },
+                ).toList(),
+              );
+            },
+          ),
+          StreamBuilder<List<SubProject>>(
+            stream: widget.database.subProjectStream(_subItemId),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData)
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              final List<SubProject> subItems = snapshot.data;
+              for (int i = 0; i < subItems.length; i++) {
+                print("${subItems[i].name}");
+              }
+
+              return DropdownButton(
+                onChanged: (valueSelectedByUser) {
+                  setState(
+                    () {
+                      print("--------" + valueSelectedByUser);
+                      _subProject = valueSelectedByUser;
+                    },
+                  );
+                },
+                value: _subProject,
+                hint: Text('Choose project'),
+                isDense: true,
+                items: subItems.map(
+                  (subItem) {
+                    return DropdownMenuItem<String>(
+                      child: Text(subItem.name),
+                      value: subItem.id,
+                    );
+                  },
+                ).toList(),
+              );
+            },
+          ),
+        ],
+      ),
+    ];
+  }
 }

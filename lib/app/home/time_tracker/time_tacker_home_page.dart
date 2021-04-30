@@ -1,5 +1,5 @@
+import 'package:akanet/app/home/time_tracker/work_time_entry_page.dart';
 import 'package:akanet/app/home_2/job_entries/job_entries_page.dart';
-import 'package:akanet/app/home_2/jobs/edit_job_page.dart';
 import 'package:akanet/app/home_2/jobs/job_list_tile.dart';
 import 'package:akanet/app/home_2/jobs/list_items_builder.dart';
 import 'package:akanet/app/home_2/models/job.dart';
@@ -53,7 +53,7 @@ class _TimeTrackerHomePageState extends State<TimeTrackerHomePage> {
           IconButton(
             onPressed: () {
               print("Here2");
-              EditJobPage.show(context, database: widget.database);
+              WorkTimeEntryPage.show(context, database: widget.database);
             },
             icon: Icon(Icons.add),
           ),
@@ -82,7 +82,7 @@ class _TimeTrackerHomePageState extends State<TimeTrackerHomePage> {
                     borderRadius: BorderRadius.all(Radius.circular(30.0)),
                     color: Colors.black.withOpacity(0.5),
                   ),
-                  child: _listBuilder(context),
+                  child: _listBuilder(context, widget.database),
                 ),
               ),
             )
@@ -92,7 +92,7 @@ class _TimeTrackerHomePageState extends State<TimeTrackerHomePage> {
     );
   }
 
-  _listBuilder(BuildContext context) {
+  _listBuilder(BuildContext context, Database database) {
     return StreamBuilder<List<Job>>(
       stream: widget.database.jobsStream(),
       builder: (context, snapshot) {
@@ -104,11 +104,15 @@ class _TimeTrackerHomePageState extends State<TimeTrackerHomePage> {
             direction: DismissDirection.endToStart,
             // onDismissed: (direction) => _delete(context, job),
             child: JobListTile(
-                job: job,
-                onTap: () {
-                  print("Here");
-                  JobEntriesPage.show(context, widget.database, job);
-                }),
+              job: job,
+              onTap: () {
+                WorkTimeEntryPage.show(
+                  context,
+                  database: widget.database,
+                  job: job,
+                );
+              },
+            ),
           ),
         );
       },

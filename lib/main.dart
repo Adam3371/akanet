@@ -5,9 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:akanet/app/landing_page.dart';
 import 'package:akanet/services/auth.dart';
 
-import 'app/home/time_tracker/time_tacker_home_page.dart';
-import 'app/home/time_tracker/work_time_entry_page.dart';
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();

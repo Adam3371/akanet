@@ -1,4 +1,6 @@
+import 'package:akanet/app/home/models/user.dart';
 import 'package:akanet/app/home_2/models/project.dart';
+import 'package:akanet/app/home_2/models/sub_project.dart';
 import 'package:meta/meta.dart';
 import 'package:akanet/app/home_2/models/entry.dart';
 import 'package:akanet/app/home_2/models/job.dart';
@@ -11,6 +13,8 @@ abstract class Database {
   Stream<List<Job>> jobsStream();
   Stream<Job> jobStream({@required String jobId});
   Stream<List<Project>> projectsStream();
+  Stream<List<SubProject>> subProjectStream(String pid);
+  Stream<User> userStream();
 
   Future<void> setEntry(Entry entry);
   Future<void> deleteEntry(Entry entry);
@@ -24,6 +28,18 @@ class FirestoreDatabase implements Database {
   final String uid;
 
   final _service = FirestoreService.instance;
+
+  @override
+  Stream<User> userStream() =>  _service.documentStream(
+        path: APIPath.user(uid),
+        builder: (data, documentId) => User.fromMap(data, documentId),
+      );
+
+  @override
+  Stream<List<SubProject>> subProjectStream(String pid) => _service.collectionStream(
+        path: APIPath.subproject(pid),
+        builder: (data, documentId) => SubProject.fromMap(data, documentId),
+      );
 
   @override
   Stream<List<Project>> projectsStream() => _service.collectionStream(
