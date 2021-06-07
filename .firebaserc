@@ -1,5 +1,14 @@
 {
   "projects": {
-    "default": "akanet-3048d"
+    "default": "akanet-219a0"
+  },
+  "targets": {
+    "akanet-219a0": {
+      "hosting": {
+        "akanet": [
+          "akanet"
+        ]
+      }
+    }
   }
 }

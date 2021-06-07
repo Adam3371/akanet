@@ -17,9 +17,9 @@ class JobListTile extends StatelessWidget {
         Expanded(
           child: ListTile(
             title: Text(job.name),
-            subtitle: Text(job.ratePerHour.toString()),
+            subtitle: Text("Date"),
             onTap: onTap,
-            trailing: Icon(Icons.chevron_right),
+            trailing: Text(job.ratePerHour.toString()),
           ),
         ),
       ],

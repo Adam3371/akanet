@@ -27,8 +27,8 @@ class HomePageMobile extends StatelessWidget {
         child: Padding(
           padding: EdgeInsets.only(
             top: (screenSize.height / 20.0),
-            left: 100,
-            right: 100,
+            left: screenSize.width/15,
+            right: screenSize.width/15,
           ),
           child: GridView.count(
             crossAxisCount: 3,

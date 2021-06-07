@@ -1,7 +1,6 @@
-import 'package:akanet/app/home_2/job_entries/job_entries_page.dart';
-import 'package:akanet/app/home_2/jobs/job_list_tile.dart';
+import 'package:akanet/app/home/IT-Ticket/edit_it_ticket_page.dart';
 import 'package:akanet/app/home_2/jobs/list_items_builder.dart';
-import 'package:akanet/app/home_2/models/job.dart';
+import 'package:akanet/app/home_2/models/it_ticket.dart';
 import 'package:akanet/services/database.dart';
 import 'package:flutter/material.dart';
 
@@ -35,7 +34,9 @@ class ItTicketPage extends StatelessWidget {
         centerTitle: true,
         actions: <Widget>[
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              EditItTicketPage.show(context, database: database);
+            },
             //  => EditJobPage.show(
             //   context,
             //   database: Provider.of<Database>(context, listen: false),
@@ -88,21 +89,32 @@ class ItTicketPage extends StatelessWidget {
   }
 
   _listBuilder(BuildContext context) {
-    return StreamBuilder<List<Job>>(
-      stream: database.jobsStream(),
+    return StreamBuilder<List<ItTicket>>(
+      stream: database.itTicketsStream(),
       builder: (context, snapshot) {
-        return ListItemsBuilder<Job>(
+        return ListItemsBuilder<ItTicket>(
           snapshot: snapshot,
-          itemBuilder: (context, job) => Dismissible(
-            key: Key('job-${job.id}'),
+          itemBuilder: (context, itTicket) => Dismissible(
+            key: Key('job-${itTicket.id}'),
             background: Container(color: Colors.red),
             direction: DismissDirection.endToStart,
             // onDismissed: (direction) => _delete(context, job),
-            child: JobListTile(
-              job: job,
+            child: ListTile(
               onTap: () {
-                JobEntriesPage.show(context, database, job);
+                EditItTicketPage.show(
+                  context,
+                  database: database,
+                  itTicket: itTicket,
+                );
               },
+              title: Text(itTicket.ticketName),
+              subtitle: Text(itTicket.category),
+              // leading: Text("itTicket.priority.toString()"),
+              trailing: Text(
+                itTicket.openingDateTime == null
+                    ? "00:00:00"
+                    : itTicket.openingDateTime,
+              ),
             ),
           ),
         );
