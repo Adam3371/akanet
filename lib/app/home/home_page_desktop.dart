@@ -1,4 +1,4 @@
-import 'package:akanet/app/home/Aircraft-tickets/aircraft_tickets_home.dart';
+import 'package:akanet/app/home/aircraft-tickets/aircraft_home.dart';
 import 'package:akanet/app/home/time_tracker/time_tacker_home_page.dart';
 import 'package:akanet/app/home_2/job_entries/job_entries_page.dart';
 import 'package:akanet/app/home_2/jobs/edit_job_page.dart';
@@ -189,7 +189,7 @@ class HomePageDesktop extends StatelessWidget {
                     padding: const EdgeInsets.all(20.0),
                     child: GestureDetector(
                       onTap: () {
-                        AircraftTicketsHome.show(
+                        AircraftHome.show(
                           context,
                           database:
                               Provider.of<Database>(context, listen: false),

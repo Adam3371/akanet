@@ -1,11 +1,8 @@
 import 'package:akanet/app/home/models/aircraft.dart';
 import 'package:akanet/app/home/models/user.dart';
-import 'package:akanet/app/home_2/models/project.dart';
-import 'package:akanet/app/home_2/models/sub_project.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:akanet/app/home_2/models/job.dart';
 import 'package:akanet/common_widgets/show_alert_dialog.dart';
 import 'package:akanet/common_widgets/show_exception_alert_dialog.dart';
 import 'package:akanet/services/database.dart';

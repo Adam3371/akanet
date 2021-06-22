@@ -1,16 +1,15 @@
-import 'package:akanet/app/home/aircraft-tickets/aircraft_ticket_list_tile.dart';
+import 'package:akanet/app/home/Aircraft-tickets/aircraft_list_tile.dart';
+import 'package:akanet/app/home/aircraft-tickets/aircraft_tickets_home.dart';
 import 'package:akanet/app/home/models/aircraft.dart';
-import 'package:akanet/app/home/models/aircraft_ticket.dart';
 import 'package:akanet/app/home_2/jobs/list_items_builder.dart';
 import 'package:akanet/services/database.dart';
 import 'package:flutter/material.dart';
 
-class AircraftTicketsHomeDesktop extends StatelessWidget {
-  const AircraftTicketsHomeDesktop({Key key, this.database, this.screenSize, this.aircraft})
+class AircraftHomeDesktop extends StatelessWidget {
+  const AircraftHomeDesktop({Key key, this.database, this.screenSize})
       : super(key: key);
   final Database database;
   final Size screenSize;
-  final Aircraft aircraft;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -48,24 +47,25 @@ class AircraftTicketsHomeDesktop extends StatelessWidget {
   }
 
   _listBuilder(BuildContext context, Database database) {
-    return StreamBuilder<List<AircraftTicket>>(
-      stream: database.aircraftTicketsStream(aircraftId: aircraft.id),
+    return StreamBuilder<List<Aircraft>>(
+      stream: database.aircraftsStream(),
       builder: (context, snapshot) {
-        return ListItemsBuilder<AircraftTicket>(
+        return ListItemsBuilder<Aircraft>(
           snapshot: snapshot,
-          itemBuilder: (context, aircraftTicket) => Dismissible(
-            key: Key('job-${aircraftTicket.id}'),
+          itemBuilder: (context, aircraft) => Dismissible(
+            key: Key('job-${aircraft.id}'),
             background: Container(color: Colors.red),
             direction: DismissDirection.endToStart,
             // onDismissed: (direction) => _delete(context, job),
-            child: AircraftTicketListTile(
-              aircraftTicket: aircraftTicket,
+            child: AircraftListTile(
+              aircraft: aircraft,
               onTap: () {
-                /* WorkTimeEntryPage.show(
+                print("Aircraft_list");
+                AircraftTicketsHome.show(
                   context,
                   database: database,
-                  job: job,
-                ); */
+                  aircraft: aircraft,
+                );
               },
             ),
           ),

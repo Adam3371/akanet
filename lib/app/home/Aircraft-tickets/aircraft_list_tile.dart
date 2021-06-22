@@ -1,6 +1,5 @@
 import 'package:akanet/app/home/models/aircraft.dart';
 import 'package:akanet/app/home/models/user.dart';
-import 'package:akanet/services/database.dart';
 import 'package:flutter/material.dart';
 
 class AircraftListTile extends StatelessWidget {

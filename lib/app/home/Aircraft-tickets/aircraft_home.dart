@@ -1,30 +1,27 @@
 import 'package:akanet/app/home/Aircraft-tickets/edit_aircraft_page.dart';
-import 'package:akanet/app/home/aircraft-tickets/aircraft_tickets_home_desktop.dart';
-import 'package:akanet/app/home/aircraft-tickets/edit_aircraft_ticket_page.dart';
-import 'package:akanet/app/home/models/aircraft.dart';
+import 'package:akanet/app/home/aircraft-tickets/aircraft_home_desktop.dart';
+import 'package:akanet/app/home_2/models/job.dart';
 import 'package:akanet/services/database.dart';
 import 'package:flutter/material.dart';
 
-class AircraftTicketsHome extends StatefulWidget {
-  const AircraftTicketsHome(
-      {Key key, this.database, this.screenSize, this.aircraft})
+class AircraftHome extends StatefulWidget {
+  const AircraftHome({Key key, this.database, this.job})
       : super(key: key);
   final Database database;
-  final Size screenSize;
-  final Aircraft aircraft;
+  final Job job;
 
-  static const routeName = "/AircraftTickets";
+  static const routeName = "/AircraftTicket";
 
   static Future<void> show(
     BuildContext context, {
     Database database,
-    Aircraft aircraft,
+    Job job,
   }) async {
     await Navigator.of(context, rootNavigator: true).push(
       MaterialPageRoute(
-        builder: (context) => AircraftTicketsHome(
+        builder: (context) => AircraftHome(
           database: database,
-          aircraft: aircraft,
+          job: job,
         ),
         fullscreenDialog: true,
       ),
@@ -32,22 +29,17 @@ class AircraftTicketsHome extends StatefulWidget {
   }
 
   @override
-  _AircraftTicketsHomeState createState() => _AircraftTicketsHomeState();
+  _AircraftHomeState createState() => _AircraftHomeState();
 }
 
-class _AircraftTicketsHomeState extends State<AircraftTicketsHome> {
+class _AircraftHomeState extends State<AircraftHome> {
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.aircraft.name),
-        leading: InkWell(
-          child: Image.asset("images/akaflieg-logo.png"),
-          onTap: () {
-            Navigator.popUntil(context, ModalRoute.withName('/'));
-          },
-        ),
+        title: Text("Aircrafts"),
+        leading: Image.asset("images/akaflieg-logo.png"),
         centerTitle: true,
         // title: Text(
         // auth.currentUser.email == null
@@ -58,25 +50,22 @@ class _AircraftTicketsHomeState extends State<AircraftTicketsHome> {
         actions: [
           IconButton(
             onPressed: () {
-              // print("Here223");a
-              EditAircraftTicketPage.show(context, database: widget.database, aircraft: widget.aircraft);
+              print("Here2");
+              EditAircraftPage.show(context, database: widget.database);
             },
             icon: Icon(Icons.add),
           ),
         ],
       ),
       body: screenSize.height > screenSize.width
-          ? AircraftTicketsHomeDesktop(
+          ? AircraftHomeDesktop(
               //Mobile
               database: widget.database,
               screenSize: screenSize,
-              aircraft: widget.aircraft,
             )
-          : AircraftTicketsHomeDesktop(
-              //Desktop
+          : AircraftHomeDesktop(
               database: widget.database,
               screenSize: screenSize,
-              aircraft: widget.aircraft,
             ),
     );
   }
