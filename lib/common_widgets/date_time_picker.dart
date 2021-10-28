@@ -9,14 +9,14 @@ class DateTimePicker extends StatelessWidget {
     Key key,
     this.labelText,
     this.selectedDate,
-    this.selectedTime,
+    // this.selectedTime,
     this.selectDate,
     this.selectTime,
   }) : super(key: key);
 
   final String labelText;
   final DateTime selectedDate;
-  final TimeOfDay selectedTime;
+  // final TimeOfDay selectedTime;
   final ValueChanged<DateTime> selectDate;
   final ValueChanged<TimeOfDay> selectTime;
 
@@ -32,13 +32,13 @@ class DateTimePicker extends StatelessWidget {
     }
   }
 
-  Future<void> _selectTime(BuildContext context) async {
-    final pickedTime =
-        await showTimePicker(context: context, initialTime: selectedTime);
-    if (pickedTime != null && pickedTime != selectedTime) {
-      selectTime(pickedTime);
-    }
-  }
+  // Future<void> _selectTime(BuildContext context) async {
+  //   final pickedTime =
+  //       await showTimePicker(context: context, initialTime: selectedTime);
+  //   if (pickedTime != null && pickedTime != selectedTime) {
+  //     selectTime(pickedTime);
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -55,15 +55,15 @@ class DateTimePicker extends StatelessWidget {
             onPressed: () => _selectDate(context),
           ),
         ),
-        SizedBox(width: 12.0),
-        Expanded(
-          flex: 4,
-          child: InputDropdown(
-            valueText: selectedTime.format(context),
-            valueStyle: valueStyle,
-            onPressed: () => _selectTime(context),
-          ),
-        ),
+        // SizedBox(width: 12.0),
+        // Expanded(
+        //   flex: 4,
+        //   child: InputDropdown(
+        //     valueText: selectedTime.format(context),
+        //     valueStyle: valueStyle,
+        //     onPressed: () => _selectTime(context),
+        //   ),
+        // ),
       ],
     );
   }

@@ -1,28 +1,52 @@
 import 'package:meta/meta.dart';
 
 class Job {
-  Job({@required this.id, @required this.name, @required this.ratePerHour});
+  Job({
+    @required this.id,
+    @required this.project,
+    @required this.projectId,
+    @required this.subproject,
+    @required this.subprojectId,
+    @required this.description,
+    @required this.workingHours,
+  });
   final String id;
-  final String name;
-  final int ratePerHour;
+  final String project;
+  final String projectId;
+  final String subproject;
+  final String subprojectId;
+  final String description;
+  final double workingHours;
 
   factory Job.fromMap(Map<String, dynamic> data, String documentId) {
     if (data == null) {
       return null;
     }
-    final String name = data['name'];
-    final int ratePerHour = data['ratePerHour'];
+    final String description = data['description'];
+    final String project = data['project'];
+    final String projectId = data['projectId'];
+    final String subproject = data['subproject'];
+    final String subprojectId = data['subprojectId'];
+    final double workingHours = data['workingHours'];
     return Job(
       id: documentId,
-      name: name,
-      ratePerHour: ratePerHour
+      project: project,
+      projectId	: projectId,
+      subproject: subproject,
+      subprojectId: subprojectId,
+      description: description,
+      workingHours: workingHours,
     );
   }
-  
+
   Map<String, dynamic> toMap() {
     return {
-      'name': name,
-      'ratePerHour': ratePerHour,
+      'project' : project,
+      'projectId' : projectId,
+      'subproject' : subproject,
+      'subprojectId' : subprojectId,
+      'description': description,
+      'workingHours': workingHours,
     };
   }
 }

@@ -1,12 +1,15 @@
+import 'dart:html';
 import 'package:akanet/app/home_2/models/project.dart';
 import 'package:akanet/app/home_2/models/sub_project.dart';
 import 'package:akanet/common_widgets/date_time_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:akanet/app/home_2/models/job.dart';
 import 'package:akanet/common_widgets/show_exception_alert_dialog.dart';
 import 'package:akanet/services/database.dart';
+import 'package:numberpicker/numberpicker.dart';
 
 class WorkTimeEntryPage extends StatefulWidget {
   const WorkTimeEntryPage({Key key, @required this.database, this.job})
@@ -38,25 +41,41 @@ class _WorkTimeEntryPageState extends State<WorkTimeEntryPage> {
   final _formKey = GlobalKey<FormState>();
 
   String _name;
-  int _ratePerHour;
+  double _workingHours;
   String _project;
+  String _projectId;
   String _subProject;
+  String _subProjectId;
   String _subItemId;
 
   DateTime _startDate;
-  TimeOfDay _startTime;
+  int _currentHourValue = 0;
+  int _currentMinutesValue = 0;
 
   @override
   void initState() {
     super.initState();
     final start = DateTime.now();
     _startDate = DateTime(start.year, start.month, start.day);
-    _startTime = TimeOfDay.fromDateTime(start);
+
     if (widget.job != null) {
-      _name = widget.job.name;
-      _ratePerHour = widget.job.ratePerHour;
+      _name = widget.job.description;
+      _workingHours = widget.job.workingHours;
+      _project = widget.job.project;
+      _subProject = widget.job.subproject;
+      _projectId = widget.job.projectId;
+      _subProjectId = widget.job.subprojectId;
+      _subItemId = widget.job.projectId;
+
+      double value = widget.job.workingHours;
+      // if (value < 0) return 'Invalid Value';
+      int flooredValue = value.floor();
+      double decimalValue = value - flooredValue;
+      _currentHourValue = flooredValue;
+      _currentMinutesValue = (decimalValue * 60).toInt().round();
     }
   }
+
 
   bool _validateAndSaveForm() {
     final form = _formKey.currentState;
@@ -71,9 +90,9 @@ class _WorkTimeEntryPageState extends State<WorkTimeEntryPage> {
     if (_validateAndSaveForm()) {
       try {
         final jobs = await widget.database.jobsStream().first;
-        final allNames = jobs.map((job) => job.name).toList();
+        final allNames = jobs.map((job) => job.description).toList();
         if (widget.job != null) {
-          allNames.remove(widget.job.name);
+          allNames.remove(widget.job.description);
         }
         // if (allNames.contains(_name)) {
         //   showAlertDialog(
@@ -83,8 +102,17 @@ class _WorkTimeEntryPageState extends State<WorkTimeEntryPage> {
         //     defaultActionText: 'OK',
         //   );
         // } else {
+        _workingHours = _currentHourValue + (_currentMinutesValue / 60);
         final id = widget.job?.id ?? documentIdFromCurrentDate();
-        final job = Job(id: id, name: _name, ratePerHour: _ratePerHour);
+        final job = Job(
+          id: id,
+          project: _project,
+          projectId: _projectId,
+          subproject: _subProject,
+          subprojectId: _subProjectId,
+          description: _name,
+          workingHours: _workingHours,
+        );
         await widget.database.setJob(job);
         Navigator.of(context).pop();
         // }
@@ -147,32 +175,16 @@ class _WorkTimeEntryPageState extends State<WorkTimeEntryPage> {
     return DateTimePicker(
       labelText: 'Start',
       selectedDate: _startDate,
-      selectedTime: _startTime,
+      // selectedTime: _startTime,
       selectDate: (date) => setState(() => _startDate = date),
-      selectTime: (time) => setState(() => _startTime = time),
     );
   }
 
   List<Widget> _buildFormChildren() {
     return [
       _buildStartDate(),
-      TextFormField(
-        decoration: InputDecoration(labelText: 'Description'),
-        initialValue: _name,
-        validator: (value) => value.isNotEmpty ? null : 'Name can\'t be empty',
-        onSaved: (value) => _name = value,
-      ),
-      TextFormField(
-        decoration: InputDecoration(labelText: 'Number of hours (30min = 0,5)'),
-        initialValue: _ratePerHour != null ? '$_ratePerHour' : null,
-        keyboardType: TextInputType.numberWithOptions(
-          signed: false,
-          decimal: false,
-        ),
-        onSaved: (value) => _ratePerHour = int.tryParse(value) ?? 0,
-      ),
       SizedBox(
-        height: 40,
+        height: 30,
       ),
       Row(
         children: [
@@ -185,20 +197,29 @@ class _WorkTimeEntryPageState extends State<WorkTimeEntryPage> {
                 );
               final List<Project> items = snapshot.data;
               for (int i = 0; i < items.length; i++) {
-                print("${items[i].name}");
+                // print("${items[i].name}");
               }
               return DropdownButton(
                 onChanged: (valueSelectedByUser) {
                   setState(
                     () {
-                      print("--------" + valueSelectedByUser);
-                      _project = valueSelectedByUser;
+                      print("--------" +
+                          items
+                              .firstWhere((element) =>
+                                  element.id == valueSelectedByUser)
+                              .name);
+                      _projectId = valueSelectedByUser;
+                      _project = items
+                          .firstWhere(
+                              (element) => element.id == valueSelectedByUser)
+                          .name;
                       _subProject = null;
+                      _subProjectId = null;
                       _subItemId = valueSelectedByUser;
                     },
                   );
                 },
-                value: _project,
+                value: _projectId,
                 hint: Text('Choose project'),
                 isDense: true,
                 items: items.map(
@@ -221,7 +242,7 @@ class _WorkTimeEntryPageState extends State<WorkTimeEntryPage> {
                 );
               final List<SubProject> subItems = snapshot.data;
               for (int i = 0; i < subItems.length; i++) {
-                print("${subItems[i].name}");
+                // print("${subItems[i].name}");
               }
 
               return DropdownButton(
@@ -229,11 +250,15 @@ class _WorkTimeEntryPageState extends State<WorkTimeEntryPage> {
                   setState(
                     () {
                       print("--------" + valueSelectedByUser);
-                      _subProject = valueSelectedByUser;
+                      _subProjectId = valueSelectedByUser;
+                      _subProject = subItems
+                          .firstWhere(
+                              (element) => element.id == valueSelectedByUser)
+                          .name;
                     },
                   );
                 },
-                value: _subProject,
+                value: _subProjectId,
                 hint: Text('Choose project'),
                 isDense: true,
                 items: subItems.map(
@@ -248,6 +273,59 @@ class _WorkTimeEntryPageState extends State<WorkTimeEntryPage> {
             },
           ),
         ],
+      ),
+      SizedBox(
+        height: 30,
+      ),
+      TextFormField(
+        decoration: InputDecoration(labelText: 'Description'),
+        initialValue: _name,
+        validator: (value) => value.isNotEmpty ? null : 'Name can\'t be empty',
+        onSaved: (value) => _name = value,
+      ),
+      Row(
+        children: [
+          Text(
+            "Hours",
+            style: TextStyle(
+              fontSize: 20,
+            ),
+          ),
+          NumberPicker(
+            value: _currentHourValue,
+            minValue: 0,
+            maxValue: 24,
+            step: 1,
+            haptics: true,
+            onChanged: (value) => setState(() => _currentHourValue = value),
+          ),
+          Text(
+            "Minutes",
+            style: TextStyle(
+              fontSize: 20,
+            ),
+          ),
+          NumberPicker(
+            value: _currentMinutesValue,
+            minValue: 0,
+            maxValue: 45,
+            step: 15,
+            haptics: true,
+            onChanged: (value) => setState(() => _currentMinutesValue = value),
+          ),
+        ],
+      ),
+      // TextFormField(
+      //   decoration: InputDecoration(labelText: 'Number of hours (30min = 0,5)'),
+      //   initialValue: _ratePerHour != null ? '$_ratePerHour' : null,
+      //   keyboardType: TextInputType.numberWithOptions(
+      //     signed: false,
+      //     decimal: false,
+      //   ),
+      //   onSaved: (value) => _ratePerHour = int.tryParse(value) ?? 0,
+      // ),
+      SizedBox(
+        height: 40,
       ),
     ];
   }

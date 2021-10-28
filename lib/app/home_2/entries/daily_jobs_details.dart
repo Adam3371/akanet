@@ -64,10 +64,10 @@ class DailyJobsDetails {
     Map<String, JobDetails> jobDuration = {};
     for (var entryJob in entries) {
       final entry = entryJob.entry;
-      final pay = entry.durationInHours * entryJob.job.ratePerHour;
+      final pay = entry.durationInHours * entryJob.job.workingHours;
       if (jobDuration[entry.jobId] == null) {
         jobDuration[entry.jobId] = JobDetails(
-          name: entryJob.job.name,
+          name: entryJob.job.description,
           durationInHours: entry.durationInHours,
           pay: pay,
         );

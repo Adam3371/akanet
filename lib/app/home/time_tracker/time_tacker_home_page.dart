@@ -39,7 +39,12 @@ class _TimeTrackerHomePageState extends State<TimeTrackerHomePage> {
     Size screenSize = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        leading: Image.asset("images/akaflieg-logo.png"),
+        leading: GestureDetector(
+          child: Image.asset("images/akaflieg-logo.png"),
+          onTap: () {
+            Navigator.of(context).pop();
+          },
+        ),
         centerTitle: true,
         // title: Text(
         // auth.currentUser.email == null
@@ -59,9 +64,9 @@ class _TimeTrackerHomePageState extends State<TimeTrackerHomePage> {
       ),
       body: screenSize.height > screenSize.width
           ? TimeTrackerHomePageMobile(
-            database: widget.database,
-            screenSize: screenSize,
-          )
+              database: widget.database,
+              screenSize: screenSize,
+            )
           : TimeTrackerHomePageDesktop(
               database: widget.database,
               screenSize: screenSize,

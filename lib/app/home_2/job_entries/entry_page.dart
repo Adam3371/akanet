@@ -85,7 +85,7 @@ class _EntryPageState extends State<EntryPage> {
     return Scaffold(
       appBar: AppBar(
         elevation: 2.0,
-        title: Text(widget.job.name),
+        title: Text(widget.job.description),
         actions: <Widget>[
           TextButton(
             child: Text(
@@ -120,7 +120,7 @@ class _EntryPageState extends State<EntryPage> {
     return DateTimePicker(
       labelText: 'Start',
       selectedDate: _startDate,
-      selectedTime: _startTime,
+      // selectedTime: _startTime,
       selectDate: (date) => setState(() => _startDate = date),
       selectTime: (time) => setState(() => _startTime = time),
     );
@@ -130,7 +130,7 @@ class _EntryPageState extends State<EntryPage> {
     return DateTimePicker(
       labelText: 'End',
       selectedDate: _endDate,
-      selectedTime: _endTime,
+      // selectedTime: _endTime,
       selectDate: (date) => setState(() => _endDate = date),
       selectTime: (time) => setState(() => _endTime = time),
     );

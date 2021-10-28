@@ -15,12 +15,12 @@ class TimeTrackerHomePageDesktop extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage("images/mue31.jpg"),
-          fit: BoxFit.cover,
-        ),
-      ),
+      // decoration: BoxDecoration(
+      //   image: DecorationImage(
+      //     image: AssetImage("images/mue31.jpg"),
+      //     fit: BoxFit.cover,
+      //   ),
+      // ),
       child: Container(
         child: Row(
           children: [
@@ -31,11 +31,11 @@ class TimeTrackerHomePageDesktop extends StatelessWidget {
             Container(
               width: 2 * screenSize.width / 4,
               child: Padding(
-                padding: EdgeInsets.all(40),
+                padding: EdgeInsets.all(10),
                 child: Container(
                   height: double.infinity,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                    // borderRadius: BorderRadius.all(Radius.circular(30.0)),
                     color: Colors.black.withOpacity(0.5),
                   ),
                   child: _listBuilder(context, database),

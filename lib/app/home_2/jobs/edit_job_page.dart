@@ -38,7 +38,7 @@ class _EditJobPageState extends State<EditJobPage> {
   final _formKey = GlobalKey<FormState>();
 
   String _name;
-  int _ratePerHour;
+  double _ratePerHour;
   String _project;
   String _subProject;
   String _subItemId;
@@ -47,8 +47,8 @@ class _EditJobPageState extends State<EditJobPage> {
   void initState() {
     super.initState();
     if (widget.job != null) {
-      _name = widget.job.name;
-      _ratePerHour = widget.job.ratePerHour;
+      _name = widget.job.description;
+      _ratePerHour = widget.job.workingHours;
     }
   }
 
@@ -65,9 +65,9 @@ class _EditJobPageState extends State<EditJobPage> {
     if (_validateAndSaveForm()) {
       try {
         final jobs = await widget.database.jobsStream().first;
-        final allNames = jobs.map((job) => job.name).toList();
+        final allNames = jobs.map((job) => job.description).toList();
         if (widget.job != null) {
-          allNames.remove(widget.job.name);
+          allNames.remove(widget.job.description);
         }
         if (allNames.contains(_name)) {
           showAlertDialog(
@@ -78,7 +78,7 @@ class _EditJobPageState extends State<EditJobPage> {
           );
         } else {
           final id = widget.job?.id ?? documentIdFromCurrentDate();
-          final job = Job(id: id, name: _name, ratePerHour: _ratePerHour);
+          final job = Job(id: id, description: _name, workingHours: _ratePerHour);
           await widget.database.setJob(job);
           Navigator.of(context).pop();
         }
