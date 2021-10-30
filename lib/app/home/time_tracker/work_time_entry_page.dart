@@ -1,4 +1,3 @@
-import 'dart:html';
 import 'package:akanet/app/home_2/models/project.dart';
 import 'package:akanet/app/home_2/models/sub_project.dart';
 import 'package:akanet/common_widgets/date_time_picker.dart';
@@ -48,7 +47,7 @@ class _WorkTimeEntryPageState extends State<WorkTimeEntryPage> {
   String _subProjectId;
   String _subItemId;
 
-  DateTime _startDate;
+  DateTime _workDate;
   int _currentHourValue = 0;
   int _currentMinutesValue = 0;
 
@@ -56,7 +55,7 @@ class _WorkTimeEntryPageState extends State<WorkTimeEntryPage> {
   void initState() {
     super.initState();
     final start = DateTime.now();
-    _startDate = DateTime(start.year, start.month, start.day);
+    _workDate = DateTime(start.year, start.month, start.day);
 
     if (widget.job != null) {
       _name = widget.job.description;
@@ -76,7 +75,6 @@ class _WorkTimeEntryPageState extends State<WorkTimeEntryPage> {
     }
   }
 
-
   bool _validateAndSaveForm() {
     final form = _formKey.currentState;
     if (form.validate()) {
@@ -89,7 +87,9 @@ class _WorkTimeEntryPageState extends State<WorkTimeEntryPage> {
   Future<void> _submit() async {
     if (_validateAndSaveForm()) {
       try {
-        final jobs = await widget.database.jobsStream().first;
+        final jobs = await widget.database
+            .jobsStream(_workDate.year.toString(), _workDate.month.toString())
+            .first;
         final allNames = jobs.map((job) => job.description).toList();
         if (widget.job != null) {
           allNames.remove(widget.job.description);
@@ -103,6 +103,7 @@ class _WorkTimeEntryPageState extends State<WorkTimeEntryPage> {
         //   );
         // } else {
         _workingHours = _currentHourValue + (_currentMinutesValue / 60);
+
         final id = widget.job?.id ?? documentIdFromCurrentDate();
         final job = Job(
           id: id,
@@ -112,6 +113,7 @@ class _WorkTimeEntryPageState extends State<WorkTimeEntryPage> {
           subprojectId: _subProjectId,
           description: _name,
           workingHours: _workingHours,
+          workDate: _workDate,
         );
         await widget.database.setJob(job);
         Navigator.of(context).pop();
@@ -174,9 +176,9 @@ class _WorkTimeEntryPageState extends State<WorkTimeEntryPage> {
   Widget _buildStartDate() {
     return DateTimePicker(
       labelText: 'Start',
-      selectedDate: _startDate,
+      selectedDate: _workDate,
       // selectedTime: _startTime,
-      selectDate: (date) => setState(() => _startDate = date),
+      selectDate: (date) => setState(() => _workDate = date),
     );
   }
 

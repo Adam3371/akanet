@@ -32,8 +32,9 @@ abstract class Database {
 
   Stream<List<ItTicketCategory>> itTicketCategoties();
 
-  Stream<Job> jobStream({@required String jobId});
-  Stream<List<Job>> jobsStream();
+  Stream<Job> jobStream({@required Job job});
+  Stream<List<String>> jobYearsStream();
+  Stream<List<Job>> jobsStream(String year, String month);
   Future<void> setJob(Job job);
   Future<void> deleteJob(Job job);
 
@@ -115,6 +116,14 @@ class FirestoreDatabase implements Database {
       );
 
   @override
+  Stream<List<String>> jobYearsStream() => _service.collectionStream(
+      path: APIPath.jobYears(uid),
+      builder: (data, documentId) {
+        print("Document Id" + documentId);
+        return documentId;
+      });
+
+  @override
   Stream<List<Project>> projectsStream() => _service.collectionStream(
         path: APIPath.project(),
         builder: (data, documentId) => Project.fromMap(data, documentId),
@@ -136,20 +145,30 @@ class FirestoreDatabase implements Database {
       );
 
   @override
-  Stream<Job> jobStream({@required String jobId}) => _service.documentStream(
-        path: APIPath.job(uid, jobId),
+  Stream<Job> jobStream({@required Job job}) => _service.documentStream(
+        path: APIPath.job(
+          uid,
+          job.workDate.year.toString(),
+          job.workDate.month.toString(),
+          job.id,
+        ),
         builder: (data, documentId) => Job.fromMap(data, documentId),
       );
 
   @override
-  Stream<List<Job>> jobsStream() => _service.collectionStream(
-        path: APIPath.jobs(uid),
+  Stream<List<Job>> jobsStream(String year, String month) => _service.collectionStream(
+        path: APIPath.jobs(uid, year, month),
         builder: (data, documentId) => Job.fromMap(data, documentId),
       );
 
   @override
   Future<void> setJob(Job job) => _service.setData(
-        path: APIPath.job(uid, job.id),
+        path: APIPath.job(
+          uid,
+          job.workDate.year.toString(),
+          job.workDate.month.toString(),
+          job.id,
+        ),
         data: job.toMap(),
       );
 
@@ -163,7 +182,14 @@ class FirestoreDatabase implements Database {
       }
     }
     // delete job
-    await _service.deleteData(path: APIPath.job(uid, job.id));
+    await _service.deleteData(
+      path: APIPath.job(
+        uid,
+        job.workDate.year.toString(),
+        job.workDate.month.toString(),
+        job.id,
+      ),
+    );
   }
 
   @override
@@ -193,8 +219,8 @@ class FirestoreDatabase implements Database {
         path: APIPath.user(uid),
         builder: (data, documentId) => User.fromMap(data, documentId),
       );
-  
-   @override
+
+  @override
   Stream<List<User>> usersStream() => _service.collectionStream(
         path: APIPath.users(),
         builder: (data, documentId) => User.fromMap(data, documentId),

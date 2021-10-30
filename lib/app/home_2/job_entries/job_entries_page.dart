@@ -4,7 +4,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:provider/provider.dart';
 import 'package:akanet/app/home_2/job_entries/entry_list_item.dart';
 import 'package:akanet/app/home_2/job_entries/entry_page.dart';
 import 'package:akanet/app/home_2/jobs/edit_job_page.dart';
@@ -50,7 +49,7 @@ class JobEntriesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<Job>(
-        stream: database.jobStream(jobId: job.id),
+        stream: database.jobStream(job: job),
         builder: (context, snapshot) {
           final job = snapshot.data;
           final jobName = job?.description ?? '';

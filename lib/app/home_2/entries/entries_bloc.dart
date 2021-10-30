@@ -15,7 +15,7 @@ class EntriesBloc {
   /// combine List<Job>, List<Entry> into List<EntryJob>
   Stream<List<EntryJob>> get _allEntriesStream => Rx.combineLatest2(
         database.entriesStream(),
-        database.jobsStream(),
+        database.jobsStream("2021", "10"),
         _entriesJobsCombiner,
       );
 

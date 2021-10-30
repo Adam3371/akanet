@@ -1,6 +1,6 @@
 {
   "projects": {
-    "default": "akanet-219a0"
+    "default": "akanet"
   },
   "targets": {
     "akanet-219a0": {

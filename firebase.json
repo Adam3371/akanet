@@ -1,11 +1,17 @@
 {
   "hosting": {
-    "target": "akanet",
     "public": "build/web",
+    "target": "akanet",
     "ignore": [
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
     ]
   }
 }

@@ -105,20 +105,20 @@ class SignInPage extends StatelessWidget {
           SizedBox(
             height: 15.0,
           ),
-          Text(
-            "or",
-            style: TextStyle(
-              fontSize: 20.0,
-              color: Colors.black87,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          SignInButton(
-            text: "Go anonymous",
-            color: Colors.black26,
-            textColor: Colors.white,
-            onPressed: isLoading ? null : () => _signInAnonymously(context),
-          ),
+          // Text(
+          //   "or",
+          //   style: TextStyle(
+          //     fontSize: 20.0,
+          //     color: Colors.black87,
+          //   ),
+          //   textAlign: TextAlign.center,
+          // ),
+          // SignInButton(
+          //   text: "Go anonymous",
+          //   color: Colors.black26,
+          //   textColor: Colors.white,
+          //   onPressed: isLoading ? null : () => _signInAnonymously(context),
+          // ),
           SizedBox(
             height: 15.0,
           ),

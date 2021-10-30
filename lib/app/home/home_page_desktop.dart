@@ -74,7 +74,7 @@ class HomePageDesktop extends StatelessWidget {
                         ),
                       ),
                       StreamBuilder<List<Job>>(
-                        stream: database.jobsStream(),
+                        stream: database.jobsStream("2021", "10"),
                         builder: (context, snapshot) {
                           return ListItemsBuilder<Job>(
                             snapshot: snapshot,

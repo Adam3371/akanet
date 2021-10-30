@@ -9,6 +9,7 @@ class Job {
     @required this.subprojectId,
     @required this.description,
     @required this.workingHours,
+    @required this.workDate,
   });
   final String id;
   final String project;
@@ -17,6 +18,7 @@ class Job {
   final String subprojectId;
   final String description;
   final double workingHours;
+  final DateTime workDate;
 
   factory Job.fromMap(Map<String, dynamic> data, String documentId) {
     if (data == null) {
@@ -28,6 +30,7 @@ class Job {
     final String subproject = data['subproject'];
     final String subprojectId = data['subprojectId'];
     final double workingHours = data['workingHours'];
+    final DateTime workDate = DateTime.now();
     return Job(
       id: documentId,
       project: project,
@@ -36,6 +39,7 @@ class Job {
       subprojectId: subprojectId,
       description: description,
       workingHours: workingHours,
+      workDate: workDate,
     );
   }
 
@@ -47,6 +51,7 @@ class Job {
       'subprojectId' : subprojectId,
       'description': description,
       'workingHours': workingHours,
+      'workDate' : workDate,
     };
   }
 }

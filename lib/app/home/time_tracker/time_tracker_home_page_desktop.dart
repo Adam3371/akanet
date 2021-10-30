@@ -50,7 +50,7 @@ class TimeTrackerHomePageDesktop extends StatelessWidget {
 
   _listBuilder(BuildContext context, Database database) {
     return StreamBuilder<List<Job>>(
-      stream: database.jobsStream(),
+      stream: database.jobsStream("2021", "10"),
       builder: (context, snapshot) {
         return ListItemsBuilder<Job>(
           snapshot: snapshot,

@@ -1,3 +1,4 @@
+
 class APIPath {
   static String aircrafts() => 'aircrafts';
   static String aircraft(String aircraftId) => 'aircrafts/$aircraftId';
@@ -5,8 +6,9 @@ class APIPath {
   static String aircraftTicket(String aircraftId, String aircraftTicketId) => 'aircrafts/$aircraftId/tickets/$aircraftTicketId';
   static String user(String uid) => 'users/$uid';
   static String users() => 'users';
-  static String job(String uid, String jobId) => 'users/$uid/jobs/$jobId';
-  static String jobs(String uid) => 'users/$uid/jobs';
+  static String job(String uid, String year, String month, String jobId) => 'users/$uid/years/$year/months/$month/jobs/$jobId';
+  static String jobs(String uid, String year, String month) => 'users/$uid/years/$year/months/$month/jobs';
+  static String jobYears(String uid) => 'users/$uid/';
   static String itTicket(String ticketId) => 'itTickets/$ticketId';
   static String itTickets() => 'itTickets';
   static String itTicketsCategory() => 'itTicketCategory';
