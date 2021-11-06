@@ -5,6 +5,7 @@ import 'package:akanet/app/home_2/models/it_ticket.dart';
 import 'package:akanet/app/home_2/models/it_ticket_category.dart';
 import 'package:akanet/app/home_2/models/project.dart';
 import 'package:akanet/app/home_2/models/sub_project.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:meta/meta.dart';
 import 'package:akanet/app/home_2/models/entry.dart';
 import 'package:akanet/app/home_2/models/job.dart';
@@ -116,12 +117,20 @@ class FirestoreDatabase implements Database {
       );
 
   @override
-  Stream<List<String>> jobYearsStream() => _service.collectionStream(
-      path: APIPath.jobYears(uid),
-      builder: (data, documentId) {
-        print("Document Id" + documentId);
-        return documentId;
-      });
+  Stream<List<String>> jobYearsStream() {
+    var querySnapshot = FirebaseFirestore.instance
+        .collection("users/$uid/years")
+        .snapshots();
+    return querySnapshot.map((snapshot){
+      final result = snapshot.docs.map((e) => e.id).toList();
+      print("resuld " + result.toString());
+      return result;
+    });
+    // var snapshots = querySnapshot;
+    // return querySnapshot;
+
+    // return years.docs.map(years => years.data());
+  }
 
   @override
   Stream<List<Project>> projectsStream() => _service.collectionStream(
@@ -156,7 +165,8 @@ class FirestoreDatabase implements Database {
       );
 
   @override
-  Stream<List<Job>> jobsStream(String year, String month) => _service.collectionStream(
+  Stream<List<Job>> jobsStream(String year, String month) =>
+      _service.collectionStream(
         path: APIPath.jobs(uid, year, month),
         builder: (data, documentId) => Job.fromMap(data, documentId),
       );

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:akanet/app/home_2/models/job.dart';
 
@@ -16,10 +17,24 @@ class JobListTile extends StatelessWidget {
       children: [
         Expanded(
           child: ListTile(
-            title: Text(job.description),
-            subtitle: Text("Date"),
+            leading: Text(
+              job.workingHours.toString() + " h",
+              style: TextStyle(
+                fontSize: 20,
+              ),
+            ),
+            title: job.subproject != null
+                ? Text(job.project + "> " + job.subproject)
+                : Text(job.project),
+            subtitle: Text(job.description),
             onTap: onTap,
-            trailing: Text(job.workingHours.toString()),
+            trailing: Text(
+              job.workDate.day.toString() +
+                  "." +
+                  job.workDate.month.toString() +
+                  "." +
+                  job.workDate.year.toString(),
+            ),
           ),
         ),
       ],

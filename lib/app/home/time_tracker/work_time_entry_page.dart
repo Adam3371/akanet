@@ -60,11 +60,13 @@ class _WorkTimeEntryPageState extends State<WorkTimeEntryPage> {
     if (widget.job != null) {
       _name = widget.job.description;
       _workingHours = widget.job.workingHours;
+      _workDate = widget.job.workDate;
       _project = widget.job.project;
       _subProject = widget.job.subproject;
       _projectId = widget.job.projectId;
       _subProjectId = widget.job.subprojectId;
       _subItemId = widget.job.projectId;
+
 
       double value = widget.job.workingHours;
       // if (value < 0) return 'Invalid Value';

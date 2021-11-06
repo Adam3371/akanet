@@ -61,6 +61,43 @@ class _TimeTrackerHomePageMobileState extends State<TimeTrackerHomePageMobile> {
                 child: Row(
                   children: [
                     Spacer(),
+                    // StreamBuilder<List<String>>(
+                    //   stream: widget.database.jobYearsStream(),
+                    //   builder: (context, snapshot) {
+                    //     if (!snapshot.hasData)
+                    //       return Center(
+                    //         child: CircularProgressIndicator(),
+                    //       );
+                    //     final List<String> items = snapshot.data;
+                    //     for (int i = 0; i < items.length; i++) {
+                    //       print("--------------${items[i]}");
+                    //     }
+                    //     return DropdownButton(
+                    //       onChanged: (valueSelectedByUser) {
+                    //         setState(
+                    //           () {
+                    //             print("--------" +
+                    //                 items
+                    //                     .firstWhere((element) =>
+                    //                         element == valueSelectedByUser)
+                    //                     );
+                    //             _jobYears = valueSelectedByUser;
+
+                    //           },
+                    //         );
+                    //       },
+                    //       value: _jobYears,
+                    //       hint: Text('Choose project'),
+                    //       isDense: true,
+                    //       items: items.map((value) {
+                    //         return DropdownMenuItem<String>(
+                    //           value: value,
+                    //           child: Text(value),
+                    //         );
+                    //       }).toList(),
+                    //     );
+                    //   },
+                    // ),
                     DropdownButton<String>(
                       value: _jobYears,
                       icon: const Icon(Icons.arrow_downward),
@@ -76,8 +113,12 @@ class _TimeTrackerHomePageMobileState extends State<TimeTrackerHomePageMobile> {
                           _jobYears = newValue;
                         });
                       },
-                      items: <String>['2021', '2020', '2019']
-                          .map<DropdownMenuItem<String>>((String value) {
+                      items: <String>[
+                        '2022',
+                        '2021',
+                        '2020',
+                        '2019',
+                      ].map<DropdownMenuItem<String>>((String value) {
                         return DropdownMenuItem<String>(
                           value: value,
                           child: Text(value),
@@ -121,50 +162,11 @@ class _TimeTrackerHomePageMobileState extends State<TimeTrackerHomePageMobile> {
                       }).toList(),
                     ),
                     Spacer(),
-                    // StreamBuilder<List<String>>(
-                    //   stream: widget.database.jobYearsStream(),
-                    //   builder: (context, snapshot) {
-                    //     if (!snapshot.hasData)
-                    //       return Center(
-                    //         child: CircularProgressIndicator(),
-                    //       );
-                    //     final List<String> items = snapshot.data;
-                    //     for (int i = 0; i < items.length; i++) {
-                    //       print("$items <====");
-                    //     }
-                    //     return DropdownButton(
-                    //       onChanged: (valueSelectedByUser) {
-                    //         setState(
-                    //           () {
-                    //             _jobYears = valueSelectedByUser;
-                    //           },
-                    //         );
-                    //       },
-                    //       value: items[0],
-                    //       hint: Text('Choose project'),
-                    //       isDense: true,
-                    //       items: items.map(
-                    //         (item) {
-                    //           return DropdownMenuItem<String>(
-                    //             child: Text(item),
-                    //             value: item,
-                    //           );
-                    //         },
-                    //       ).toList(),
-                    //     );
-                    //   },
-                    // ),
                   ],
                 ),
               ),
               Container(
-                // decoration: BoxDecoration(
-                //   borderRadius: BorderRadius.only(
-                //     topLeft: Radius.circular(30),
-                //     topRight: Radius.circular(30),
-                // ),
                 color: Colors.black54,
-                // ),
                 height: widget.screenSize.height / 10,
                 child: Row(
                   children: [
@@ -175,7 +177,7 @@ class _TimeTrackerHomePageMobileState extends State<TimeTrackerHomePageMobile> {
                             ConnectionState.waiting) {
                           return CircularProgressIndicator();
                         }
-                        print("++++++"+snapshot.data.toString());
+                        print("++++++" + snapshot.data.toString());
                         List<Job> jobs = snapshot.data;
                         totalWorkingHours = 0;
                         for (int i = 0; i < jobs.length; i++) {
@@ -209,7 +211,6 @@ class _TimeTrackerHomePageMobileState extends State<TimeTrackerHomePageMobile> {
     return StreamBuilder<List<Job>>(
       stream: database.jobsStream(_jobYears, _jobMonth),
       builder: (context, snapshot) {
-        
         if (snapshot.connectionState == ConnectionState.waiting) {
           return CircularProgressIndicator();
         }

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:meta/meta.dart';
 
 class Job {
@@ -30,7 +31,9 @@ class Job {
     final String subproject = data['subproject'];
     final String subprojectId = data['subprojectId'];
     final double workingHours = data['workingHours'];
-    final DateTime workDate = DateTime.now();
+    Timestamp timestamp = data['workDate'];
+    final DateTime workDate = timestamp.toDate();
+  
     return Job(
       id: documentId,
       project: project,

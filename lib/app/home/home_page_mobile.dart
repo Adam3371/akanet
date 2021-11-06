@@ -64,7 +64,7 @@ class HomePageMobile extends StatelessWidget {
                         SizedBox(
                           height: 20,
                         ),
-                        Text("Test2"),
+                        Text("Test3"),
                       ],
                     ),
                   ),
