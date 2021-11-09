@@ -13,6 +13,11 @@ class TimeTrackerHomePageMobile extends StatefulWidget {
       : super(key: key);
   final Database database;
   final Size screenSize;
+  // final _nowDate = DateTime.now();
+  // final String  dropdownValue = _nowDate.year.toString();
+  //   _jobYears = _nowDate.year.toString();
+
+  //   _jobMonth = _nowDate.month.toString();
 
   @override
   _TimeTrackerHomePageMobileState createState() =>
@@ -24,7 +29,7 @@ class _TimeTrackerHomePageMobileState extends State<TimeTrackerHomePageMobile> {
   String dropdownValue = "2021";
   String _jobYears = "2021";
 
-  String _jobMonth = "10";
+  String _jobMonth = "11";
 
   Future<void> _delete(BuildContext context, Job job) async {
     try {
@@ -40,12 +45,6 @@ class _TimeTrackerHomePageMobileState extends State<TimeTrackerHomePageMobile> {
 
   @override
   Widget build(BuildContext context) {
-    final _nowDate = DateTime.now();
-    dropdownValue = _nowDate.year.toString();
-    _jobYears = _nowDate.year.toString();
-
-    _jobMonth = _nowDate.month.toString();
-
     return Container(
       width: widget.screenSize.width,
       // decoration: BoxDecoration(
