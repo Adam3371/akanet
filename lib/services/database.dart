@@ -1,6 +1,6 @@
 import 'package:akanet/app/home/models/aircraft.dart';
 import 'package:akanet/app/home/models/aircraft_ticket.dart';
-import 'package:akanet/app/home/models/user.dart';
+import 'package:akanet/app/home/models/my_user.dart';
 import 'package:akanet/app/home_2/models/it_ticket.dart';
 import 'package:akanet/app/home_2/models/it_ticket_category.dart';
 import 'package:akanet/app/home_2/models/project.dart';
@@ -43,8 +43,8 @@ abstract class Database {
   Future<void> setEntry(Entry entry);
   Future<void> deleteEntry(Entry entry);
 
-  Stream<User> userStream();
-  Stream<List<User>> usersStream();
+  Stream<MyUser> userStream();
+  Stream<List<MyUser>> usersStream();
 }
 
 String documentIdFromCurrentDate() => DateTime.now().toIso8601String();
@@ -225,14 +225,14 @@ class FirestoreDatabase implements Database {
       );
 
   @override
-  Stream<User> userStream() => _service.documentStream(
+  Stream<MyUser> userStream() => _service.documentStream(
         path: APIPath.user(uid),
-        builder: (data, documentId) => User.fromMap(data, documentId),
+        builder: (data, documentId) => MyUser.fromMap(data, documentId),
       );
 
   @override
-  Stream<List<User>> usersStream() => _service.collectionStream(
+  Stream<List<MyUser>> usersStream() => _service.collectionStream(
         path: APIPath.users(),
-        builder: (data, documentId) => User.fromMap(data, documentId),
+        builder: (data, documentId) => MyUser.fromMap(data, documentId),
       );
 }

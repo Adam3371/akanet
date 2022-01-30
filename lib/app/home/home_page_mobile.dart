@@ -1,10 +1,11 @@
 import 'package:akanet/app/home/IT-Ticket/it_ticket_page.dart';
+import 'package:akanet/app/home/time_manager/time_manager_home_page.dart';
 import 'package:akanet/app/home/time_tracker/time_tacker_home_page.dart';
 import 'package:akanet/services/database.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'models/user.dart';
+import 'models/my_user.dart';
 
 class HomePageMobile extends StatelessWidget {
   const HomePageMobile({Key key, this.screenSize, this.database})
@@ -27,8 +28,8 @@ class HomePageMobile extends StatelessWidget {
         child: Padding(
           padding: EdgeInsets.only(
             top: (screenSize.height / 20.0),
-            left: screenSize.width/15,
-            right: screenSize.width/15,
+            left: screenSize.width / 15,
+            right: screenSize.width / 15,
           ),
           child: GridView.count(
             crossAxisCount: 3,
@@ -122,7 +123,7 @@ class HomePageMobile extends StatelessWidget {
                   elevation: 10.0,
                   child: ListTile(
                     leading: Text(
-                      "Flugzeu",
+                      "Aircraft",
                       textAlign: TextAlign.center,
                       style: TextStyle(color: Colors.white),
                     ),
@@ -163,7 +164,7 @@ class HomePageMobile extends StatelessWidget {
                   ),
                 ),
               ),
-              StreamBuilder<User>(
+              StreamBuilder<MyUser>(
                   stream: database.userStream(),
                   builder: (context, snapshot) {
                     // print("snapshot: " + snapshot.data.name.toString());
@@ -184,6 +185,43 @@ class HomePageMobile extends StatelessWidget {
                                 ),
                               )
                             : CircularProgressIndicator(),
+                      ),
+                    );
+                  }),
+              StreamBuilder<MyUser>(
+                  stream: database.userStream(),
+                  builder: (context, snapshot) {
+                    // print("snapshot: " + snapshot.data.name.toString());
+                    return GestureDetector(
+                      onTap: () {
+                        TimeManagerHomePage.show(
+                          context,
+                          database:
+                              Provider.of<Database>(context, listen: false),
+                        );
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(2.0),
+                        child: Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            color: Colors.black54.withOpacity(0.5),
+                            elevation: 10.0,
+                            child: snapshot.hasData 
+                                ? snapshot.data.role == "Admin"
+                                 ? ListTile(
+                                    leading: Text(
+                                      "Time Manager",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  )
+                                : Icon(
+                                    Icons.lock,
+                                    color: Colors.white,
+                                  ) : CircularProgressIndicator()
+                                  ) ,
                       ),
                     );
                   }),
