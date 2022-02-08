@@ -36,6 +36,7 @@ abstract class Database {
   Stream<Job> jobStream({@required Job job});
   Stream<List<String>> jobYearsStream();
   Stream<List<Job>> jobsStream(String year, String month);
+  Stream<List<Job>> jobsToApproveStream(String uid, String year, String month);
   Future<void> setJob(Job job);
   Future<void> deleteJob(Job job);
 
@@ -168,6 +169,13 @@ class FirestoreDatabase implements Database {
   Stream<List<Job>> jobsStream(String year, String month) =>
       _service.collectionStream(
         path: APIPath.jobs(uid, year, month),
+        builder: (data, documentId) => Job.fromMap(data, documentId),
+      );
+  
+  @override
+  Stream<List<Job>> jobsToApproveStream(String id, String year, String month) =>
+      _service.collectionStream(
+        path: APIPath.jobs(id, year, month),
         builder: (data, documentId) => Job.fromMap(data, documentId),
       );
 

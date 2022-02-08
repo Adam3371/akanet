@@ -1,4 +1,6 @@
 import 'package:akanet/app/home/models/my_user.dart';
+import 'package:akanet/app/home/time_manager/time_manager_approve_page_desktop.dart';
+import 'package:akanet/app/home/time_manager/time_manager_approve_page_mobile.dart';
 import 'package:akanet/app/home/time_tracker/work_time_entry_page.dart';
 import 'package:akanet/app/home_2/jobs/job_list_tile.dart';
 import 'package:akanet/app/home_2/jobs/list_items_builder.dart';
@@ -84,7 +86,7 @@ class _TimeManagerHomePageMobileState extends State<TimeManagerHomePageMobile> {
                           totalWorkingHours += job.workingHours;
                         }
 
-                        return Text("Total: $totalWorkingHours");
+                        return Text("Open Hours to Approve: $totalWorkingHours");
                       },
                     ),
                     TextButton(
@@ -123,7 +125,18 @@ class _TimeManagerHomePageMobileState extends State<TimeManagerHomePageMobile> {
               direction: DismissDirection.endToStart,
               child: ListTile(
                 onTap: () {
-                  
+                  print("Here12");
+                  TimeTrackerApprovePageMobile.show(
+                    context,
+                    user: user,
+                    screenSize: widget.screenSize,
+                    database: database,
+                  );
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //       builder: (context) => const TimeManagerApprovePageDesktop()),
+                  // );
                 },
                 title: Text(user.nickname),
               ),
