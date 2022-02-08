@@ -1,14 +1,14 @@
 import 'package:akanet/app/home/models/aircraft.dart';
 import 'package:akanet/app/home/models/aircraft_ticket.dart';
 import 'package:akanet/app/home/models/my_user.dart';
-import 'package:akanet/app/home_2/models/it_ticket.dart';
-import 'package:akanet/app/home_2/models/it_ticket_category.dart';
-import 'package:akanet/app/home_2/models/project.dart';
-import 'package:akanet/app/home_2/models/sub_project.dart';
+import 'package:akanet/app/home/models/it_ticket.dart';
+import 'package:akanet/app/home/models/it_ticket_category.dart';
+import 'package:akanet/app/home/models/project.dart';
+import 'package:akanet/app/home/models/sub_project.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:meta/meta.dart';
-import 'package:akanet/app/home_2/models/entry.dart';
-import 'package:akanet/app/home_2/models/job.dart';
+import 'package:akanet/app/home/models/entry.dart';
+import 'package:akanet/app/home/models/job.dart';
 import 'package:akanet/services/api_path.dart';
 import 'package:akanet/services/firestore_service.dart';
 

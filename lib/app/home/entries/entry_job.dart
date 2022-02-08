@@ -1,5 +1,5 @@
-import 'package:akanet/app/home_2/models/entry.dart';
-import 'package:akanet/app/home_2/models/job.dart';
+import 'package:akanet/app/home/models/entry.dart';
+import 'package:akanet/app/home/models/job.dart';
 
 class EntryJob {
   EntryJob(this.entry, this.job);

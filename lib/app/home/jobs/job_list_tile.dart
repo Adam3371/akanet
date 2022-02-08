@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:akanet/app/home_2/models/job.dart';
+import 'package:akanet/app/home/models/job.dart';
 
 class JobListTile extends StatelessWidget {
   const JobListTile({
