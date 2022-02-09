@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:akanet/app/home/job_entries/entry_list_item.dart';
 import 'package:akanet/app/home/job_entries/entry_page.dart';
 import 'package:akanet/app/home/jobs/edit_job_page.dart';

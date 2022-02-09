@@ -78,7 +78,16 @@ class _EditJobPageState extends State<EditJobPage> {
           );
         } else {
           final id = widget.job?.id ?? documentIdFromCurrentDate();
-          final job = Job(id: id, description: _name, workingHours: _ratePerHour);
+          final job = Job(
+            id: id,
+            project: widget.job.project,
+            projectId: widget.job.projectId,
+            subproject: widget.job.subproject,
+            subprojectId: widget.job.subprojectId,
+            workDate: widget.job.workDate,
+            description: _name,
+            workingHours: _ratePerHour,
+          );
           await widget.database.setJob(job);
           Navigator.of(context).pop();
         }
