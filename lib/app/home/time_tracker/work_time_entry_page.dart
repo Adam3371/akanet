@@ -112,6 +112,7 @@ class _WorkTimeEntryPageState extends State<WorkTimeEntryPage> {
           projectId: _projectId,
           subproject: _subProject,
           subprojectId: _subProjectId,
+          approveStatus: "open",
           description: _name,
           workingHours: _workingHours,
           workDate: _workDate,

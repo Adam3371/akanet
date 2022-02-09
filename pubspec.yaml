@@ -58,6 +58,10 @@ flutter:
     - images/akaflieg-logo.png
     - images/gruppenbild.jpg
     - images/mue31.jpg
+    - images/mue31_new.png
+    - images/mue31_new_cut.png
+    - images/background.jpg
+    
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

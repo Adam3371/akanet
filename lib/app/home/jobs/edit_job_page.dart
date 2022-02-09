@@ -84,6 +84,7 @@ class _EditJobPageState extends State<EditJobPage> {
             projectId: widget.job.projectId,
             subproject: widget.job.subproject,
             subprojectId: widget.job.subprojectId,
+            approveStatus: "open", //open, approved, rejected (toClarify)
             workDate: widget.job.workDate,
             description: _name,
             workingHours: _ratePerHour,

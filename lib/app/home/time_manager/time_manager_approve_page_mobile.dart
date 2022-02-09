@@ -10,12 +10,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 class TimeTrackerApprovePageMobile extends StatefulWidget {
   const TimeTrackerApprovePageMobile(
-      {Key key, this.user, this.database, this.screenSize, this.job})
+      {Key key, this.user, this.database, this.screenSize})
       : super(key: key);
   final Database database;
   final Size screenSize;
   final MyUser user;
-  final Job job;
+
 
   static Future<void> show(
     BuildContext context, {
@@ -30,7 +30,6 @@ class TimeTrackerApprovePageMobile extends StatefulWidget {
           database: database,
           screenSize: screenSize,
           user: user,
-          job: job,
         ),
         fullscreenDialog: true,
       ),
@@ -42,9 +41,14 @@ class TimeTrackerApprovePageMobile extends StatefulWidget {
       _TimeTrackerApprovePageMobileState();
 }
 
+
+
 class _TimeTrackerApprovePageMobileState
     extends State<TimeTrackerApprovePageMobile> {
   double totalWorkingHours = 0;
+
+  DateTime now = new DateTime.now();
+
   String dropdownValue = "2021";
   String _jobYears = "2021";
   String _jobMonth = "11";
@@ -59,6 +63,29 @@ class _TimeTrackerApprovePageMobileState
         exception: e,
       );
     }
+  }
+
+
+  Future<void> _approveSingle(Job thisJob, String status) async {
+    print("jdskgdng21345");
+    try {
+      print(status);
+      await widget.database.approveJob(id: widget.user.id, job: thisJob, approveStatus: status);
+    } on FirebaseException catch (e) {
+      showExceptionAlertDialog(
+        context,
+        title: 'Operation failed',
+        exception: e,
+      );
+    }
+  }
+
+  @override
+  void initState() {
+    _jobYears = now.year.toString();
+    _jobMonth = now.month.toString();
+
+    super.initState();
   }
 
   @override
@@ -125,15 +152,15 @@ class _TimeTrackerApprovePageMobileState
                           });
                         },
                         items: <String>[
-                          '01',
-                          '02',
-                          '03',
-                          '04',
-                          '05',
-                          '06',
-                          '07',
-                          '08',
-                          '09',
+                          '1',
+                          '2',
+                          '3',
+                          '4',
+                          '5',
+                          '6',
+                          '7',
+                          '8',
+                          '9',
                           '10',
                           '11',
                           '12'
@@ -154,7 +181,8 @@ class _TimeTrackerApprovePageMobileState
                   child: Row(
                     children: [
                       StreamBuilder(
-                        stream: widget.database.jobsStream(_jobYears, _jobMonth),
+                        stream:
+                            widget.database.jobsStream(_jobYears, _jobMonth),
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
@@ -182,7 +210,7 @@ class _TimeTrackerApprovePageMobileState
                     ],
                   ),
                 ),
-                _listBuilder(context, widget.user ,widget.database),
+                _listBuilder(context, widget.user, widget.database),
               ],
             ),
           ),
@@ -193,7 +221,7 @@ class _TimeTrackerApprovePageMobileState
 
   _listBuilder(BuildContext context, MyUser user, Database database) {
     return StreamBuilder<List<Job>>(
-      stream: database.jobsToApproveStream(user.id ,_jobYears, _jobMonth),
+      stream: database.jobsToApproveStream(user.id, _jobYears, _jobMonth),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return CircularProgressIndicator();
@@ -207,16 +235,10 @@ class _TimeTrackerApprovePageMobileState
               key: Key('job-${job.id}'),
               background: Container(color: Colors.red),
               direction: DismissDirection.endToStart,
-              onDismissed: (direction) => _delete(context, job),
+              // onDismissed: (direction) => _approveSingle(context, job, "approved"),
               child: JobApproveListTile(
+                approve: _approveSingle,
                 job: job,
-                onTap: () {
-                  WorkTimeEntryPage.show(
-                    context,
-                    database: database,
-                    job: job,
-                  );
-                },
               ),
             );
           },

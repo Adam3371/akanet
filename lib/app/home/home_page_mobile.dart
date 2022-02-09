@@ -19,8 +19,10 @@ class HomePageMobile extends StatelessWidget {
       width: screenSize.width,
       decoration: BoxDecoration(
         image: DecorationImage(
-          image: AssetImage("images/mue31.jpg"),
+          image: AssetImage("images/background.jpg"),
           fit: BoxFit.cover,
+          
+          // scale: 0.3,
         ),
       ),
       child: Container(

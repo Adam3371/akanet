@@ -38,6 +38,7 @@ abstract class Database {
   Stream<List<Job>> jobsStream(String year, String month);
   Stream<List<Job>> jobsToApproveStream(String uid, String year, String month);
   Future<void> setJob(Job job);
+  Future<void> approveJob({String id, Job job, String approveStatus});
   Future<void> deleteJob(Job job);
 
   Stream<List<Entry>> entriesStream({Job job});
@@ -119,10 +120,9 @@ class FirestoreDatabase implements Database {
 
   @override
   Stream<List<String>> jobYearsStream() {
-    var querySnapshot = FirebaseFirestore.instance
-        .collection("users/$uid/years")
-        .snapshots();
-    return querySnapshot.map((snapshot){
+    var querySnapshot =
+        FirebaseFirestore.instance.collection("users/$uid/years").snapshots();
+    return querySnapshot.map((snapshot) {
       final result = snapshot.docs.map((e) => e.id).toList();
       print("resuld " + result.toString());
       return result;
@@ -171,7 +171,7 @@ class FirestoreDatabase implements Database {
         path: APIPath.jobs(uid, year, month),
         builder: (data, documentId) => Job.fromMap(data, documentId),
       );
-  
+
   @override
   Stream<List<Job>> jobsToApproveStream(String id, String year, String month) =>
       _service.collectionStream(
@@ -188,6 +188,19 @@ class FirestoreDatabase implements Database {
           job.id,
         ),
         data: job.toMap(),
+      );
+
+  @override
+  Future<void> approveJob({String id, Job job, String approveStatus}) =>
+      _service.setField(
+        path: APIPath.job(
+          id,
+          job.workDate.year.toString(),
+          job.workDate.month.toString(),
+          job.id,
+        ),
+        field: "approveStatus",
+        value: approveStatus,
       );
 
   @override

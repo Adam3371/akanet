@@ -11,6 +11,7 @@ class Job {
     @required this.description,
     @required this.workingHours,
     @required this.workDate,
+    @required this.approveStatus,
   });
   final String id;
   final String project;
@@ -18,6 +19,7 @@ class Job {
   final String subproject;
   final String subprojectId;
   final String description;
+  final String approveStatus;
   final double workingHours;
   final DateTime workDate;
 
@@ -30,16 +32,18 @@ class Job {
     final String projectId = data['projectId'];
     final String subproject = data['subproject'];
     final String subprojectId = data['subprojectId'];
+    final String approveStatus = data['approveStatus'];
     final double workingHours = data['workingHours'];
     Timestamp timestamp = data['workDate'];
     final DateTime workDate = timestamp.toDate();
-  
+
     return Job(
       id: documentId,
       project: project,
-      projectId	: projectId,
+      projectId: projectId,
       subproject: subproject,
       subprojectId: subprojectId,
+      approveStatus: approveStatus,
       description: description,
       workingHours: workingHours,
       workDate: workDate,
@@ -48,13 +52,14 @@ class Job {
 
   Map<String, dynamic> toMap() {
     return {
-      'project' : project,
-      'projectId' : projectId,
-      'subproject' : subproject,
-      'subprojectId' : subprojectId,
+      'project': project,
+      'projectId': projectId,
+      'subproject': subproject,
+      'subprojectId': subprojectId,
+      'approveStatus': approveStatus,
       'description': description,
       'workingHours': workingHours,
-      'workDate' : workDate,
+      'workDate': workDate,
     };
   }
 }

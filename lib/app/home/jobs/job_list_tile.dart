@@ -16,6 +16,11 @@ class JobListTile extends StatelessWidget {
       children: [
         Expanded(
           child: ListTile(
+            tileColor: job.approveStatus == "approved"
+                ? Colors.green[600]
+                : job.approveStatus == "rejected"
+                    ? Colors.red[600]
+                    : null,
             leading: Text(
               job.workingHours.toString() + " h",
               style: TextStyle(

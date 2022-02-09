@@ -5,10 +5,10 @@ class JobApproveListTile extends StatelessWidget {
   const JobApproveListTile({
     Key key,
     @required this.job,
-    this.onTap,
+    this.approve,
   }) : super(key: key);
   final Job job;
-  final VoidCallback onTap;
+  final Function approve;
 
   @override
   Widget build(BuildContext context) {
@@ -16,13 +16,18 @@ class JobApproveListTile extends StatelessWidget {
       children: [
         Expanded(
           child: ListTile(
+            tileColor: job.approveStatus == "approved"
+                ? Colors.green[300]
+                : job.approveStatus == "rejected"
+                    ? Colors.red[300]
+                    : null,
             isThreeLine: true,
             leading: Column(
               children: [
                 Text(
                   job.workingHours.toString() + " h",
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -38,28 +43,40 @@ class JobApproveListTile extends StatelessWidget {
                 ? Text(job.project + "> " + job.subproject)
                 : Text(job.project),
             subtitle: Text(job.description),
-            onTap: onTap,
             trailing: Container(
-              width: MediaQuery.of(context).size.width / 4,
+              width: MediaQuery.of(context).size.width / 3.8,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   IconButton(
                     color: Colors.red,
-                    onPressed: () {},
+                    onPressed: () {
+                      if(job.approveStatus == "rejected")
+                      {
+                        approve(job, "open");
+                      }
+                      else
+                      {
+                        approve(job, "rejected");
+                      }
+                    },
                     icon: Icon(
                       Icons.cancel_presentation_outlined,
                     ),
                   ),
-                  // Spacer(),
-                  // IconButton(
-                  //   color: Colors.yellow,
-                  //   onPressed: () {},
-                  //   icon: Icon(Icons.question_mark),
-                  // ),
                   IconButton(
                     color: Colors.green,
-                    onPressed: () {},
+                    onPressed: () {
+                      if(job.approveStatus == "approved")
+                      {
+                        approve(job, "open");
+                      }
+                      else
+                      {
+                        approve(job, "approved");
+                      }
+                      
+                    },
                     icon: Icon(Icons.assignment_turned_in_outlined),
                   ),
                 ],
