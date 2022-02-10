@@ -16,7 +16,6 @@ class TimeTrackerApprovePageMobile extends StatefulWidget {
   final Size screenSize;
   final MyUser user;
 
-
   static Future<void> show(
     BuildContext context, {
     Database database,
@@ -41,8 +40,6 @@ class TimeTrackerApprovePageMobile extends StatefulWidget {
       _TimeTrackerApprovePageMobileState();
 }
 
-
-
 class _TimeTrackerApprovePageMobileState
     extends State<TimeTrackerApprovePageMobile> {
   double totalWorkingHours = 0;
@@ -65,12 +62,12 @@ class _TimeTrackerApprovePageMobileState
     }
   }
 
-
   Future<void> _approveSingle(Job thisJob, String status) async {
     print("jdskgdng21345");
     try {
       print(status);
-      await widget.database.approveJob(id: widget.user.id, job: thisJob, approveStatus: status);
+      await widget.database
+          .approveJob(id: widget.user.id, job: thisJob, approveStatus: status);
     } on FirebaseException catch (e) {
       showExceptionAlertDialog(
         context,
@@ -229,17 +226,9 @@ class _TimeTrackerApprovePageMobileState
         return ListItemsBuilder<Job>(
           snapshot: snapshot,
           itemBuilder: (context, job) {
-            // totalWorkingHours += job.ratePerHour;
-            // print(totalWorkingHours);
-            return Dismissible(
-              key: Key('job-${job.id}'),
-              background: Container(color: Colors.red),
-              direction: DismissDirection.endToStart,
-              // onDismissed: (direction) => _approveSingle(context, job, "approved"),
-              child: JobApproveListTile(
-                approve: _approveSingle,
-                job: job,
-              ),
+            return JobApproveListTile(
+              approve: _approveSingle,
+              job: job,
             );
           },
         );

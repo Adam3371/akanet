@@ -2,6 +2,7 @@ import 'package:akanet/app/home/time_tracker/work_time_entry_page.dart';
 import 'package:akanet/app/home/jobs/job_list_tile.dart';
 import 'package:akanet/app/home/jobs/list_items_builder.dart';
 import 'package:akanet/app/home/models/job.dart';
+import 'package:akanet/common_widgets/show_alert_dialog.dart';
 import 'package:akanet/common_widgets/show_exception_alert_dialog.dart';
 import 'package:akanet/services/database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -32,25 +33,54 @@ class _TimeTrackerHomePageMobileState extends State<TimeTrackerHomePageMobile> {
   String _jobMonth = "11";
 
   Future<void> _delete(BuildContext context, Job job) async {
-    try {
-      print("Before dialog");
-      showAboutDialog(context: context);
-      print("After Dialog");
-      await widget.database.deleteJob(job);
-    } on FirebaseException catch (e) {
-      showExceptionAlertDialog(
-        context,
-        title: 'Operation failed',
-        exception: e,
-      );
-    }
+    bool _willBeDeleted = true;
+    showDialog(
+        context: context,
+        builder: (BuildContext ctx) {
+          return AlertDialog(
+            title: Text("Confirm Delete"),
+            content: Text("Are you sure you want delete the hours?"),
+            actions: [
+              TextButton(
+                onPressed: () async {
+                  _willBeDeleted = true;
+                  try {
+                    await widget.database.deleteJob(job);
+                  } on FirebaseException catch (e) {
+                    showExceptionAlertDialog(
+                      context,
+                      title: 'Operation failed',
+                      exception: e,
+                    );
+                  }
+
+                  Navigator.of(context).pop();
+                  setState(() {
+                    
+                  });
+                },
+                child: Text("Yes"),
+              ),
+              TextButton(
+                  onPressed: () {
+                    _willBeDeleted = false;
+                    Navigator.of(context).pop();
+                    setState(() {
+                    
+                  });
+                  },
+                  child: Text('No'))
+            ],
+          );
+        });
+    if (_willBeDeleted) {}
   }
 
-    @override
+  @override
   void initState() {
     _jobYears = now.year.toString();
     _jobMonth = now.month.toString();
-    
+
     super.initState();
   }
 
@@ -194,11 +224,11 @@ class _TimeTrackerHomePageMobileState extends State<TimeTrackerHomePageMobile> {
                             ConnectionState.waiting) {
                           return CircularProgressIndicator();
                         }
-                        print("++++++" + snapshot.data.toString());
+                        // print("++++++" + snapshot.data.toString());
                         List<Job> jobs = snapshot.data;
                         totalWorkingHours = 0;
                         for (int i = 0; i < jobs.length; i++) {
-                          print(jobs[i].description);
+                          // print(jobs[i].description);
                           Job job = jobs[i];
                           totalWorkingHours += job.workingHours;
                         }

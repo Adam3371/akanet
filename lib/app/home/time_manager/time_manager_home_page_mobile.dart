@@ -82,7 +82,8 @@ class _TimeManagerHomePageMobileState extends State<TimeManagerHomePageMobile> {
                           totalWorkingHours += job.workingHours;
                         }
 
-                        return Text("Open Hours to Approve: $totalWorkingHours");
+                        return Text(
+                            "Open Hours to Approve: $totalWorkingHours");
                       },
                     ),
                     TextButton(
@@ -113,29 +114,23 @@ class _TimeManagerHomePageMobileState extends State<TimeManagerHomePageMobile> {
         return ListItemsBuilder<MyUser>(
           snapshot: snapshot,
           itemBuilder: (context, user) {
-            // totalWorkingHours += job.ratePerHour;
-            // print(totalWorkingHours);
-            return Dismissible(
-              key: Key('user-${user.name}'),
-              background: Container(color: Colors.red),
-              direction: DismissDirection.endToStart,
-              child: ListTile(
-                onTap: () {
-                  print("Here12");
-                  TimeTrackerApprovePageMobile.show(
-                    context,
-                    user: user,
-                    screenSize: widget.screenSize,
-                    database: database,
-                  );
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //       builder: (context) => const TimeManagerApprovePageDesktop()),
-                  // );
-                },
-                title: Text(user.nickname),
-              ),
+            // direction: DismissDirection.endToStart,
+            return ListTile(
+              onTap: () {
+                print("Here12");
+                TimeTrackerApprovePageMobile.show(
+                  context,
+                  user: user,
+                  screenSize: widget.screenSize,
+                  database: database,
+                );
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(
+                //       builder: (context) => const TimeManagerApprovePageDesktop()),
+                // );
+              },
+              title: Text(user.nickname),
             );
           },
         );
