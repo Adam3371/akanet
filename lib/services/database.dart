@@ -1,14 +1,14 @@
 import 'package:akanet/app/home/models/aircraft.dart';
 import 'package:akanet/app/home/models/aircraft_ticket.dart';
-import 'package:akanet/app/home/models/user.dart';
-import 'package:akanet/app/home_2/models/it_ticket.dart';
-import 'package:akanet/app/home_2/models/it_ticket_category.dart';
-import 'package:akanet/app/home_2/models/project.dart';
-import 'package:akanet/app/home_2/models/sub_project.dart';
+import 'package:akanet/app/home/models/my_user.dart';
+import 'package:akanet/app/home/models/it_ticket.dart';
+import 'package:akanet/app/home/models/it_ticket_category.dart';
+import 'package:akanet/app/home/models/project.dart';
+import 'package:akanet/app/home/models/sub_project.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:meta/meta.dart';
-import 'package:akanet/app/home_2/models/entry.dart';
-import 'package:akanet/app/home_2/models/job.dart';
+import 'package:akanet/app/home/models/entry.dart';
+import 'package:akanet/app/home/models/job.dart';
 import 'package:akanet/services/api_path.dart';
 import 'package:akanet/services/firestore_service.dart';
 
@@ -36,15 +36,17 @@ abstract class Database {
   Stream<Job> jobStream({@required Job job});
   Stream<List<String>> jobYearsStream();
   Stream<List<Job>> jobsStream(String year, String month);
+  Stream<List<Job>> jobsToApproveStream(String uid, String year, String month);
   Future<void> setJob(Job job);
+  Future<void> approveJob({String id, Job job, String approveStatus});
   Future<void> deleteJob(Job job);
 
   Stream<List<Entry>> entriesStream({Job job});
   Future<void> setEntry(Entry entry);
   Future<void> deleteEntry(Entry entry);
 
-  Stream<User> userStream();
-  Stream<List<User>> usersStream();
+  Stream<MyUser> userStream();
+  Stream<List<MyUser>> usersStream();
 }
 
 String documentIdFromCurrentDate() => DateTime.now().toIso8601String();
@@ -118,10 +120,9 @@ class FirestoreDatabase implements Database {
 
   @override
   Stream<List<String>> jobYearsStream() {
-    var querySnapshot = FirebaseFirestore.instance
-        .collection("users/$uid/years")
-        .snapshots();
-    return querySnapshot.map((snapshot){
+    var querySnapshot =
+        FirebaseFirestore.instance.collection("users/$uid/years").snapshots();
+    return querySnapshot.map((snapshot) {
       final result = snapshot.docs.map((e) => e.id).toList();
       print("resuld " + result.toString());
       return result;
@@ -172,6 +173,13 @@ class FirestoreDatabase implements Database {
       );
 
   @override
+  Stream<List<Job>> jobsToApproveStream(String id, String year, String month) =>
+      _service.collectionStream(
+        path: APIPath.jobs(id, year, month),
+        builder: (data, documentId) => Job.fromMap(data, documentId),
+      );
+
+  @override
   Future<void> setJob(Job job) => _service.setData(
         path: APIPath.job(
           uid,
@@ -180,6 +188,19 @@ class FirestoreDatabase implements Database {
           job.id,
         ),
         data: job.toMap(),
+      );
+
+  @override
+  Future<void> approveJob({String id, Job job, String approveStatus}) =>
+      _service.setField(
+        path: APIPath.job(
+          id,
+          job.workDate.year.toString(),
+          job.workDate.month.toString(),
+          job.id,
+        ),
+        field: "approveStatus",
+        value: approveStatus,
       );
 
   @override
@@ -225,14 +246,14 @@ class FirestoreDatabase implements Database {
       );
 
   @override
-  Stream<User> userStream() => _service.documentStream(
+  Stream<MyUser> userStream() => _service.documentStream(
         path: APIPath.user(uid),
-        builder: (data, documentId) => User.fromMap(data, documentId),
+        builder: (data, documentId) => MyUser.fromMap(data, documentId),
       );
 
   @override
-  Stream<List<User>> usersStream() => _service.collectionStream(
+  Stream<List<MyUser>> usersStream() => _service.collectionStream(
         path: APIPath.users(),
-        builder: (data, documentId) => User.fromMap(data, documentId),
+        builder: (data, documentId) => MyUser.fromMap(data, documentId),
       );
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class User {
-  User(
+class MyUser {
+  MyUser(
       {@required this.id,
       @required this.name,
       @required this.surname,
@@ -13,7 +13,7 @@ class User {
   final String nickname;
   final String role;
 
-  factory User.fromMap(Map<String, dynamic> data, String documentId) {
+  factory MyUser.fromMap(Map<String, dynamic> data, String documentId) {
     if (data == null) {
       return null;
     }
@@ -22,7 +22,7 @@ class User {
     final String nickname = data['nickname'];
     final String role = data['role'];
 
-    return User(
+    return MyUser(
       id: documentId,
       name: name,
       surname: surname,

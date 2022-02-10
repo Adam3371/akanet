@@ -1,6 +1,6 @@
 import 'package:akanet/app/home/Aircraft-tickets/edit_aircraft_page.dart';
 import 'package:akanet/app/home/aircraft-tickets/aircraft_home_desktop.dart';
-import 'package:akanet/app/home_2/models/job.dart';
+import 'package:akanet/app/home/models/job.dart';
 import 'package:akanet/services/database.dart';
 import 'package:flutter/material.dart';
 

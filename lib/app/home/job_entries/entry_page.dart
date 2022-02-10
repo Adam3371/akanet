@@ -1,11 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:akanet/common_widgets/date_time_picker.dart';
-import 'package:akanet/app/home_2/job_entries/format.dart';
-import 'package:akanet/app/home_2/models/entry.dart';
-import 'package:akanet/app/home_2/models/job.dart';
+import 'package:akanet/app/home/job_entries/format.dart';
+import 'package:akanet/app/home/models/entry.dart';
+import 'package:akanet/app/home/models/job.dart';
 import 'package:akanet/common_widgets/show_exception_alert_dialog.dart';
 import 'package:akanet/services/database.dart';
 

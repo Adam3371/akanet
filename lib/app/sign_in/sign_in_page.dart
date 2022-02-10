@@ -185,25 +185,25 @@ class SignInPage extends StatelessWidget {
                       SizedBox(
                         height: 15.0,
                       ),
-                      Text(
-                        "or",
-                        style: TextStyle(
-                          fontSize: 20.0,
-                          color: Colors.black87,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(20.0),
-                        child: SignInButton(
-                          text: "Request Credentials",
-                          color: Colors.black54,
-                          textColor: Colors.white,
-                          onPressed: isLoading
-                              ? null
-                              : () => _signInAnonymously(context),
-                        ),
-                      ),
+                      // Text(
+                      //   "or",
+                      //   style: TextStyle(
+                      //     fontSize: 20.0,
+                      //     color: Colors.black87,
+                      //   ),
+                      //   textAlign: TextAlign.center,
+                      // ),
+                      // Padding(
+                      //   padding: const EdgeInsets.all(20.0),
+                      //   child: SignInButton(
+                      //     text: "Request Credentials",
+                      //     color: Colors.black54,
+                      //     textColor: Colors.white,
+                      //     onPressed: isLoading
+                      //         ? null
+                      //         : () => _signInAnonymously(context),
+                      //   ),
+                      // ),
                       SizedBox(
                         height: 15.0,
                       ),

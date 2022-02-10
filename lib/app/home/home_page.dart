@@ -6,7 +6,7 @@ import 'package:akanet/services/database.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'models/user.dart';
+import 'models/my_user.dart';
 
 class HomePage extends StatelessWidget {
   Future<void> _signOut(BuildContext context) async {
@@ -33,14 +33,14 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final auth = Provider.of<AuthBase>(context, listen: false);
+    // final auth = Provider.of<AuthBase>(context, listen: false);
     final database = Provider.of<Database>(context, listen: false);
     Size screenSize = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         leading: Image.asset("images/akaflieg-logo.png"),
         centerTitle: true,
-        title: StreamBuilder<User>(
+        title: StreamBuilder<MyUser>(
           stream: database.userStream(),
           builder: (context, snapshot) {
             return Text(

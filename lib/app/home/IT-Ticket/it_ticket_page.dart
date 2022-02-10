@@ -1,6 +1,6 @@
 import 'package:akanet/app/home/IT-Ticket/edit_it_ticket_page.dart';
-import 'package:akanet/app/home_2/jobs/list_items_builder.dart';
-import 'package:akanet/app/home_2/models/it_ticket.dart';
+import 'package:akanet/app/home/jobs/list_items_builder.dart';
+import 'package:akanet/app/home/models/it_ticket.dart';
 import 'package:akanet/services/database.dart';
 import 'package:flutter/material.dart';
 

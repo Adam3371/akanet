@@ -7,8 +7,8 @@ import 'package:akanet/services/database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class TimeTrackerHomePageMobile extends StatefulWidget {
-  const TimeTrackerHomePageMobile({Key key, this.database, this.screenSize})
+class TimeManagerApprovePageDesktop extends StatefulWidget {
+  const TimeManagerApprovePageDesktop({Key key, this.database, this.screenSize})
       : super(key: key);
   final Database database;
   final Size screenSize;
@@ -19,13 +19,12 @@ class TimeTrackerHomePageMobile extends StatefulWidget {
   //   _jobMonth = _nowDate.month.toString();
 
   @override
-  _TimeTrackerHomePageMobileState createState() =>
-      _TimeTrackerHomePageMobileState();
+  _TimeManagerApprovePageDesktopState createState() =>
+      _TimeManagerApprovePageDesktopState();
 }
 
-class _TimeTrackerHomePageMobileState extends State<TimeTrackerHomePageMobile> {
+class _TimeManagerApprovePageDesktopState extends State<TimeManagerApprovePageDesktop> {
   double totalWorkingHours = 0;
-  DateTime now = new DateTime.now();
   String dropdownValue = "2021";
   String _jobYears = "2021";
 
@@ -33,9 +32,6 @@ class _TimeTrackerHomePageMobileState extends State<TimeTrackerHomePageMobile> {
 
   Future<void> _delete(BuildContext context, Job job) async {
     try {
-      print("Before dialog");
-      showAboutDialog(context: context);
-      print("After Dialog");
       await widget.database.deleteJob(job);
     } on FirebaseException catch (e) {
       showExceptionAlertDialog(
@@ -46,18 +42,10 @@ class _TimeTrackerHomePageMobileState extends State<TimeTrackerHomePageMobile> {
     }
   }
 
-    @override
-  void initState() {
-    _jobYears = now.year.toString();
-    _jobMonth = now.month.toString();
-    
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: widget.screenSize.width,
+      width: 300,
       // decoration: BoxDecoration(
       // image: DecorationImage(
       //   image: AssetImage("images/mue31.jpg"),
@@ -68,7 +56,7 @@ class _TimeTrackerHomePageMobileState extends State<TimeTrackerHomePageMobile> {
         // decoration: BoxDecoration(
         //   borderRadius: BorderRadius.circular(30),
         color: Colors.grey.withOpacity(0.7),
-        height: double.infinity,
+        height: 500,
         // ),
         child: SingleChildScrollView(
           child: Column(
@@ -159,15 +147,15 @@ class _TimeTrackerHomePageMobileState extends State<TimeTrackerHomePageMobile> {
                         });
                       },
                       items: <String>[
-                        '1',
-                        '2',
-                        '3',
-                        '4',
-                        '5',
-                        '6',
-                        '7',
-                        '8',
-                        '9',
+                        '01',
+                        '02',
+                        '03',
+                        '04',
+                        '05',
+                        '06',
+                        '07',
+                        '08',
+                        '09',
                         '10',
                         '11',
                         '12'

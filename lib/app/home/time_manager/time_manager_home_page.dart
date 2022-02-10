@@ -1,7 +1,7 @@
+import 'package:akanet/app/home/time_manager/time_manager_home_page_mobile.dart';
 import 'package:akanet/app/home/time_tracker/time_tracker_home_page_desktop.dart';
-import 'package:akanet/app/home/time_tracker/time_tracker_home_page_mobile.dart';
 import 'package:akanet/app/home/time_tracker/work_time_entry_page.dart';
-import 'package:akanet/app/home_2/models/job.dart';
+import 'package:akanet/app/home/models/job.dart';
 import 'package:akanet/services/database.dart';
 import 'package:flutter/material.dart';
 
@@ -11,7 +11,7 @@ class TimeManagerHomePage extends StatefulWidget {
   final Database database;
   final Job job;
 
-  static const routeName = "/TimeTracker";
+  static const routeName = "/TimeManager";
 
   static Future<void> show(
     BuildContext context, {
@@ -39,6 +39,7 @@ class _TimeManagerHomePageState extends State<TimeManagerHomePage> {
     Size screenSize = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
+        title: Text("Time Manager"),
         leading: GestureDetector(
           child: Image.asset("images/akaflieg-logo.png"),
           onTap: () {
@@ -63,7 +64,7 @@ class _TimeManagerHomePageState extends State<TimeManagerHomePage> {
         ],
       ),
       body: screenSize.height > screenSize.width
-          ? TimeTrackerHomePageMobile(
+          ? TimeManagerHomePageMobile(
               database: widget.database,
               screenSize: screenSize,
             )

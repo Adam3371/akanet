@@ -1,5 +1,5 @@
 import 'package:akanet/app/home/models/aircraft.dart';
-import 'package:akanet/app/home/models/user.dart';
+import 'package:akanet/app/home/models/my_user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -147,7 +147,7 @@ class _EditAircraftPageState extends State<EditAircraftPage> {
         validator: (value) => value.isNotEmpty ? null : 'Name can\'t be empty',
         onSaved: (value) => _name = value,
       ),
-      StreamBuilder<List<User>>(
+      StreamBuilder<List<MyUser>>(
         stream: widget.database.usersStream(),
         builder: (context, snapshot) {
           // print(snapshot.data);
@@ -155,7 +155,7 @@ class _EditAircraftPageState extends State<EditAircraftPage> {
             return Center(
               child: CircularProgressIndicator(),
             );
-          final List<User> items = snapshot.data;
+          final List<MyUser> items = snapshot.data;
           // print(items.length);
           for (int i = 0; i < items.length; i++) {
             print("${items[i].name}");

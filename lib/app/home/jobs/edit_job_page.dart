@@ -1,9 +1,9 @@
-import 'package:akanet/app/home_2/models/project.dart';
-import 'package:akanet/app/home_2/models/sub_project.dart';
+import 'package:akanet/app/home/models/project.dart';
+import 'package:akanet/app/home/models/sub_project.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:akanet/app/home_2/models/job.dart';
+import 'package:akanet/app/home/models/job.dart';
 import 'package:akanet/common_widgets/show_alert_dialog.dart';
 import 'package:akanet/common_widgets/show_exception_alert_dialog.dart';
 import 'package:akanet/services/database.dart';
@@ -78,7 +78,17 @@ class _EditJobPageState extends State<EditJobPage> {
           );
         } else {
           final id = widget.job?.id ?? documentIdFromCurrentDate();
-          final job = Job(id: id, description: _name, workingHours: _ratePerHour);
+          final job = Job(
+            id: id,
+            project: widget.job.project,
+            projectId: widget.job.projectId,
+            subproject: widget.job.subproject,
+            subprojectId: widget.job.subprojectId,
+            approveStatus: "open", //open, approved, rejected (toClarify)
+            workDate: widget.job.workDate,
+            description: _name,
+            workingHours: _ratePerHour,
+          );
           await widget.database.setJob(job);
           Navigator.of(context).pop();
         }

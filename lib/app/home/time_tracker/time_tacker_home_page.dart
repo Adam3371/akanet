@@ -1,7 +1,7 @@
 import 'package:akanet/app/home/time_tracker/time_tracker_home_page_desktop.dart';
 import 'package:akanet/app/home/time_tracker/time_tracker_home_page_mobile.dart';
 import 'package:akanet/app/home/time_tracker/work_time_entry_page.dart';
-import 'package:akanet/app/home_2/models/job.dart';
+import 'package:akanet/app/home/models/job.dart';
 import 'package:akanet/services/database.dart';
 import 'package:flutter/material.dart';
 

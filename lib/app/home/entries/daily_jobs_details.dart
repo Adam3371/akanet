@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:akanet/app/home_2/entries/entry_job.dart';
+import 'package:akanet/app/home/entries/entry_job.dart';
 
 /// Temporary model class to store the time tracked and pay for a job
 class JobDetails {

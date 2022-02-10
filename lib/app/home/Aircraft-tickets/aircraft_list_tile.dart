@@ -1,5 +1,5 @@
 import 'package:akanet/app/home/models/aircraft.dart';
-import 'package:akanet/app/home/models/user.dart';
+import 'package:akanet/app/home/models/my_user.dart';
 import 'package:flutter/material.dart';
 
 class AircraftListTile extends StatelessWidget {
@@ -18,7 +18,7 @@ class AircraftListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        StreamBuilder<User>(
+        StreamBuilder<MyUser>(
           builder: (context, snapshot) {
             return Expanded(
               child: ListTile(

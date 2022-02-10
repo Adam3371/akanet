@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:akanet/app/home_2/job_entries/format.dart';
-import 'package:akanet/app/home_2/models/entry.dart';
-import 'package:akanet/app/home_2/models/job.dart';
+import 'package:akanet/app/home/job_entries/format.dart';
+import 'package:akanet/app/home/models/entry.dart';
+import 'package:akanet/app/home/models/job.dart';
 
 class EntryListItem extends StatelessWidget {
   const EntryListItem({

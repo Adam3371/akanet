@@ -10,8 +10,19 @@ class FirestoreService {
     @required Map<String, dynamic> data,
   }) async {
     final reference = FirebaseFirestore.instance.doc(path);
-    print('$path: $data');
+    // print('$path: $data');
     await reference.set(data);
+  }
+
+  Future<void> setField({
+    @required String path,
+    @required String field,
+    @required String value,
+    // @required Map<String, dynamic> data,
+  }) async {
+    final reference = FirebaseFirestore.instance.doc(path);
+    // print('$path: $field : $value');
+    await reference.update({field : value});
   }
 
   Future<void> deleteData({@required String path}) async {
