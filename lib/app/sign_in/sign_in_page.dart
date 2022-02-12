@@ -1,3 +1,4 @@
+import 'package:akanet/app/sign_in/email_register_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:akanet/app/sign_in/email_sign_in_page.dart';
@@ -42,17 +43,24 @@ class SignInPage extends StatelessWidget {
     );
   }
 
-  Future<void> _signInAnonymously(BuildContext context) async {
-    try {
-      await manager.signInAnonymously();
-    } on Exception catch (e) {
-      _showSignInError(context, e);
-    }
-  }
+  // Future<void> _signInAnonymously(BuildContext context) async {
+  //   try {
+  //     await manager.signInAnonymously();
+  //   } on Exception catch (e) {
+  //     _showSignInError(context, e);
+  //   }
+  // }
 
   void _signInWithEmail(BuildContext context) {
     Navigator.of(context).push(MaterialPageRoute<void>(
       builder: (context) => EmailSignInPage(),
+      fullscreenDialog: true,
+    ));
+  }
+
+   void _registerWithEmail(BuildContext context) {
+    Navigator.of(context).push(MaterialPageRoute<void>(
+      builder: (context) => EmailRegisterPage(),
       fullscreenDialog: true,
     ));
   }
@@ -103,7 +111,13 @@ class SignInPage extends StatelessWidget {
             onPressed: isLoading ? null : () => _signInWithEmail(context),
           ),
           SizedBox(
-            height: 15.0,
+            height: 30.0,
+          ),
+           SignInButton(
+            text: "Register",
+            color: Colors.teal[600],
+            textColor: Colors.white,
+            onPressed: isLoading ? null : () => _registerWithEmail(context),
           ),
           // Text(
           //   "or",
@@ -185,6 +199,17 @@ class SignInPage extends StatelessWidget {
                       SizedBox(
                         height: 15.0,
                       ),
+                      // Padding(
+                      //   padding: const EdgeInsets.all(20.0),
+                      //   child: SignInButton(
+                      //     text: "Register",
+                      //     // color: Colors.teal[600],
+                      //     // textColor: Colors.white,
+                      //     onPressed: isLoading
+                      //         ? null
+                      //         : () => _signInWithEmail(context),
+                      //   ),
+                      // ),
                       // Text(
                       //   "or",
                       //   style: TextStyle(

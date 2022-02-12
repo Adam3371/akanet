@@ -82,7 +82,7 @@ class _EmailSignInFormChangeNotifierDesktopState
         textInputAction: TextInputAction.done,
         obscureText: true,
         onEditingComplete: _submit,
-        onChanged: model.updatePasswor,
+        onChanged: model.updatePassword,
       ),
     );
   }
