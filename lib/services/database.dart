@@ -45,6 +45,7 @@ abstract class Database {
   Future<void> setEntry(Entry entry);
   Future<void> deleteEntry(Entry entry);
 
+  Future<void> setUser(MyUser myUser);
   Stream<MyUser> userStream();
   Stream<List<MyUser>> usersStream();
 }
@@ -244,6 +245,15 @@ class FirestoreDatabase implements Database {
   Future<void> deleteEntry(Entry entry) => _service.deleteData(
         path: APIPath.entry(uid, entry.id),
       );
+
+  @override
+  Future<void> setUser(MyUser myUser) {
+    myUser.id = uid;
+    return _service.setData(
+      path: APIPath.user(uid),
+      data: myUser.toMap(),
+    );
+  }
 
   @override
   Stream<MyUser> userStream() => _service.documentStream(

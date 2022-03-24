@@ -21,7 +21,7 @@ class HomePageMobile extends StatelessWidget {
         image: DecorationImage(
           image: AssetImage("images/background.jpg"),
           fit: BoxFit.cover,
-          
+
           // scale: 0.3,
         ),
       ),
@@ -191,42 +191,42 @@ class HomePageMobile extends StatelessWidget {
                     );
                   }),
               StreamBuilder<MyUser>(
-                  stream: database.userStream(),
-                  builder: (context, snapshot) {
-                    // print("snapshot: " + snapshot.data.name.toString());
-                    return GestureDetector(
-                      onTap: () {
-                        TimeManagerHomePage.show(
-                          context,
-                          database:
-                              Provider.of<Database>(context, listen: false),
-                        );
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(2.0),
-                        child: Card(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            color: Colors.black54.withOpacity(0.5),
-                            elevation: 10.0,
-                            child: snapshot.hasData 
-                                ? snapshot.data.role == "Admin"
-                                 ? ListTile(
-                                    leading: Text(
-                                      "Time Manager",
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                  )
-                                : Icon(
-                                    Icons.lock,
-                                    color: Colors.white,
-                                  ) : CircularProgressIndicator()
-                                  ) ,
-                      ),
-                    );
-                  }),
+                stream: database.userStream(),
+                builder: (context, snapshot) {
+                  // print("snapshot: " + snapshot.data.name.toString());
+                  return GestureDetector(
+                    onTap: () {
+                      TimeManagerHomePage.show(
+                        context,
+                        database: Provider.of<Database>(context, listen: false),
+                      );
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(2.0),
+                      child: Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          color: Colors.black54.withOpacity(0.5),
+                          elevation: 10.0,
+                          child: snapshot.hasData
+                              ? snapshot.data.role == "Admin"
+                                  ? ListTile(
+                                      leading: Text(
+                                        "Time Manager",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                    )
+                                  : Icon(
+                                      Icons.lock,
+                                      color: Colors.white,
+                                    )
+                              : CircularProgressIndicator()),
+                    ),
+                  );
+                },
+              ),
             ],
           ),
         ),

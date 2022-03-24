@@ -1,8 +1,4 @@
-import 'dart:convert';
 
-import 'package:crypto/crypto.dart';
-
-String tokenValue = "350ebda8f3d23dcbf1015f34fee88dc6669eba1a61ea13ff0fe13c4d00ada96f"; //AkafliegMuenchenRocks7824!
 abstract class StringValidator {
   bool isValid(String value);
   bool isComplicaded(String value);
@@ -31,17 +27,9 @@ class NonEmptyStringValidator implements StringValidator {
   }
     @override
   bool isSame(String pass1, String pass2) {
-    bool tmp = pass1 == pass2;
-    // print(pass1 + " == " + pass2 + " = " + tmp.toString());
     return pass1 == pass2;
   }
 
-  // bool tokenMatching(String token)
-  // {
-  //   var output = sha256.convert(utf8.encode(token)).toString();
-  //   print(output);
-  //   return tokenValue == output;
-  // }
 }
 
   class EmailAndPasswordValidators {
@@ -51,5 +39,5 @@ class NonEmptyStringValidator implements StringValidator {
   final String invalidPasswordErrorText = "Password can't be empty";
   final String notSamePasswordErrorText = "Passwords are not matching";
   final String passwordNotComplicaded = "The password must at least be 8 char long, contain a digit and a special character";
-  //  final String tokenErrorText = "WrongToken";
+
 }
