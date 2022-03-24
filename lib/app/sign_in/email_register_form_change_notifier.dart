@@ -12,7 +12,7 @@ import 'dart:convert';
 import 'package:crypto/crypto.dart';
 
 String tokenValue =
-    "4fccf741af7e4e0ee281a9796a47482e718bce41903083559e7cd30cbf0805ae"; //AkafliegMunichRocks7824!
+    "4fccf741af7e4e0ee281a9796a47482e718bce41903083559e7cd30cbf0805ae"; 
 
 class EmailRegisterFormChangeNotifier extends StatefulWidget {
   EmailRegisterFormChangeNotifier({@required this.model});

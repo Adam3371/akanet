@@ -2,11 +2,13 @@ import 'package:akanet/app/home/models/my_user.dart';
 import 'package:akanet/common_widgets/show_exception_alert_dialog.dart';
 import 'package:akanet/services/database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 class RegisterData extends StatefulWidget {
   const RegisterData({Key key, this.database}) : super(key: key);
-  @required final Database database;
+  @required
+  final Database database;
 
   @override
   State<RegisterData> createState() => _RegisterDataState();
@@ -14,16 +16,22 @@ class RegisterData extends StatefulWidget {
 
 class _RegisterDataState extends State<RegisterData> {
   bool error = true;
+  String _id;
   String _name;
   String _surname;
   String _nickname;
-  String _role = "Anwärter";
+  String _email;
+  String _rank = "Anwärter";
+  DateTime _createDateTime = DateTime.now();
 
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _surnameController = TextEditingController();
   final TextEditingController _nicknameController = TextEditingController();
 
   Future<void> _submit() async {
+    final FirebaseAuth auth = FirebaseAuth.instance;
+    _email = auth.currentUser.email;
+    _id = auth.currentUser.uid;
     try {
       _name = _nameController.text;
       _surname = _surnameController.text;
@@ -34,11 +42,13 @@ class _RegisterDataState extends State<RegisterData> {
       }
 
       final myUser = MyUser(
-        //id: widget.id,
+        id: _id,
         name: _name,
         surname: _surname,
         nickname: _nickname,
-        role: _role,
+        rank: _rank,
+        email: _email,
+        createDateTime: _createDateTime,
       );
       await widget.database.setUser(myUser);
     } on FirebaseException catch (e) {
@@ -47,7 +57,7 @@ class _RegisterDataState extends State<RegisterData> {
         title: 'Operation failed',
         exception: e,
       );
-    } 
+    }
   }
 
   @override
@@ -140,7 +150,7 @@ class _RegisterDataState extends State<RegisterData> {
               Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: DropdownButton<String>(
-                  value: _role,
+                  value: _rank,
                   icon: const Icon(Icons.arrow_downward),
                   iconSize: 24,
                   elevation: 16,
@@ -151,11 +161,12 @@ class _RegisterDataState extends State<RegisterData> {
                   ),
                   onChanged: (String newValue) {
                     setState(() {
-                      _role = newValue;
+                      _rank = newValue;
                     });
                   },
                   items: <String>[
                     'Anwärter',
+                    'Junggruppler', //todelete
                     'Alter Herr',
                   ].map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(

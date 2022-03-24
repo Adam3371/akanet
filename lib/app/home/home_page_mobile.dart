@@ -181,7 +181,7 @@ class HomePageMobile extends StatelessWidget {
                         child: snapshot.hasData
                             ? ListTile(
                                 leading: Text(
-                                  snapshot.data.role,
+                                  snapshot.data.rank,
                                   textAlign: TextAlign.center,
                                   style: TextStyle(color: Colors.white),
                                 ),
@@ -210,7 +210,7 @@ class HomePageMobile extends StatelessWidget {
                           color: Colors.black54.withOpacity(0.5),
                           elevation: 10.0,
                           child: snapshot.hasData
-                              ? snapshot.data.role == "Admin"
+                              ? snapshot.data.rank == "Admin"
                                   ? ListTile(
                                       leading: Text(
                                         "Time Manager",
