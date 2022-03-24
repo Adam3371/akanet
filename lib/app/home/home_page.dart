@@ -1,6 +1,7 @@
 import 'package:akanet/app/home/home_page_desktop.dart';
 import 'package:akanet/app/home/home_page_mobile.dart';
 import 'package:akanet/app/home/register_data.dart';
+import 'package:akanet/app/home/register_data.dart';
 import 'package:akanet/common_widgets/show_alert_dialog.dart';
 import 'package:akanet/services/auth.dart';
 import 'package:akanet/services/database.dart';
