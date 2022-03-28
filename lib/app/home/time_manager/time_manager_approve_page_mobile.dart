@@ -67,7 +67,7 @@ class _TimeTrackerApprovePageMobileState
     try {
       print(status);
       await widget.database
-          .approveJob(id: widget.user.id, job: thisJob, approveStatus: status);
+          .approveJob(id: widget.user.uid, job: thisJob, approveStatus: status);
     } on FirebaseException catch (e) {
       showExceptionAlertDialog(
         context,
@@ -217,15 +217,20 @@ class _TimeTrackerApprovePageMobileState
   }
 
   _listBuilder(BuildContext context, MyUser user, Database database) {
+    print("in list builder");
     return StreamBuilder<List<Job>>(
-      stream: database.jobsToApproveStream(user.id, _jobYears, _jobMonth),
+      stream: database.jobsToApproveStream(user.uid, _jobYears, _jobMonth),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
+          print("waiting");
           return CircularProgressIndicator();
         }
+        print("after waiting " + snapshot.data.length.toString() + "   " + _jobMonth.toString());
+      
         return ListItemsBuilder<Job>(
           snapshot: snapshot,
           itemBuilder: (context, job) {
+            print("job:: " + job.description);
             return JobApproveListTile(
               approve: _approveSingle,
               job: job,

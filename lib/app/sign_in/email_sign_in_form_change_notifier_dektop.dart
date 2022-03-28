@@ -119,8 +119,8 @@ class _EmailSignInFormChangeNotifierDesktopState
         height: screenSize.height / 1.05,
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage("images/gruppenbild.jpg"),
-            fit: BoxFit.fill,
+            image: AssetImage("images/background_desktop.jpg"),
+            fit: BoxFit.cover,
           ),
         ),
         child: Row(
@@ -137,7 +137,7 @@ class _EmailSignInFormChangeNotifierDesktopState
                 ),
                 child: Container(
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
                     color: Colors.blueGrey.withOpacity(0.5),
                   ),
                   child: Column(
@@ -177,6 +177,17 @@ class _EmailSignInFormChangeNotifierDesktopState
                           onPressed: model.canSubmit ? _submit : null,
                           text: model.primaryButtonText,
                         ),
+                        
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: FormSubmitButton(
+                          onPressed: (){
+                            Navigator.of(context).pop();
+                          },
+                          text: "Go Back",
+                        ),
+                        
                       ),
                     ],
                   ),

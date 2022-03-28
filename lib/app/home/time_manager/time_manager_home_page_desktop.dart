@@ -5,8 +5,8 @@ import 'package:akanet/app/home/models/job.dart';
 import 'package:akanet/services/database.dart';
 import 'package:flutter/material.dart';
 
-class TimeManagerHomePageMobile extends StatefulWidget {
-  const TimeManagerHomePageMobile({Key key, this.database, this.screenSize})
+class TimeManagerHomePageDesktop extends StatefulWidget {
+  const TimeManagerHomePageDesktop({Key key, this.database, this.screenSize})
       : super(key: key);
   final Database database;
   final Size screenSize;
@@ -17,11 +17,11 @@ class TimeManagerHomePageMobile extends StatefulWidget {
   //   _jobMonth = _nowDate.month.toString();
 
   @override
-  _TimeManagerHomePageMobileState createState() =>
-      _TimeManagerHomePageMobileState();
+  _TimeManagerHomePageDesktopState createState() =>
+      _TimeManagerHomePageDesktopState();
 }
 
-class _TimeManagerHomePageMobileState extends State<TimeManagerHomePageMobile> {
+class _TimeManagerHomePageDesktopState extends State<TimeManagerHomePageDesktop> {
   double totalWorkingHours = 0;
   String dropdownValue = "2021";
   String _jobYears = "2021";

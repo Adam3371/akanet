@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class MyUser {
   MyUser({
+    @required this.uid,
     @required this.id,
     @required this.name,
     @required this.surname,
@@ -10,6 +11,7 @@ class MyUser {
     @required this.email,
     @required this.createDateTime,
   });
+  final String uid;
   final String id;
   final String name;
   final String surname;
@@ -22,6 +24,7 @@ class MyUser {
     if (data == null) {
       return null;
     }
+    // final String uid = documentId;
     final String id = data['id'];
     final String name = data['name'];
     final String surname = data['surname'];
@@ -31,6 +34,7 @@ class MyUser {
     // final DateTime createDateTime = data['createDateTime'];
 
     return MyUser(
+      uid: documentId,
       id: id,
       name: name,
       surname: surname,

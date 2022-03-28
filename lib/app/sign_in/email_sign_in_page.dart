@@ -9,14 +9,14 @@ class EmailSignInPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Center(
-          child: Text("Sign in"),
+          child: Text("Sign in   "),
         ),
         elevation: 10,
       ),
       body: screenSize.height > screenSize.width
           ? SingleChildScrollView(
               child: Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(8.0),
                 child: Card(
                   child: EmailSignInFormChangeNotifier.create(context),
                 ),

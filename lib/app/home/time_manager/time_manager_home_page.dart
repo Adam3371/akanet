@@ -1,3 +1,4 @@
+import 'package:akanet/app/home/time_manager/time_manager_home_page_desktop.dart';
 import 'package:akanet/app/home/time_manager/time_manager_home_page_mobile.dart';
 import 'package:akanet/app/home/time_tracker/time_tracker_home_page_desktop.dart';
 import 'package:akanet/app/home/time_tracker/work_time_entry_page.dart';
@@ -68,7 +69,7 @@ class _TimeManagerHomePageState extends State<TimeManagerHomePage> {
               database: widget.database,
               screenSize: screenSize,
             )
-          : TimeTrackerHomePageDesktop(
+          : TimeManagerHomePageDesktop(
               database: widget.database,
               screenSize: screenSize,
             ),

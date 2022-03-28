@@ -1,4 +1,5 @@
 import 'package:akanet/app/home/aircraft-tickets/aircraft_home.dart';
+import 'package:akanet/app/home/time_manager/time_manager_home_page.dart';
 import 'package:akanet/app/home/time_tracker/time_tacker_home_page.dart';
 import 'package:akanet/app/home/job_entries/job_entries_page.dart';
 import 'package:akanet/app/home/jobs/edit_job_page.dart';
@@ -10,8 +11,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class HomePageDesktop extends StatelessWidget {
-  const HomePageDesktop({Key key, this.screenSize, this.database})
-      : super(key: key);
+  const HomePageDesktop({
+    Key key,
+    this.screenSize,
+    this.database,
+  }) : super(key: key);
   final Size screenSize;
   final Database database;
 
@@ -21,83 +25,13 @@ class HomePageDesktop extends StatelessWidget {
       width: screenSize.width,
       decoration: BoxDecoration(
         image: DecorationImage(
-          image: AssetImage("images/mue31.jpg"),
+          image: AssetImage("images/background_desktop.jpg"),
           fit: BoxFit.cover,
         ),
       ),
       child: Row(
         children: [
-          Container(
-            width: screenSize.width / 3.0,
-            child: Padding(
-              padding: EdgeInsets.only(
-                top: screenSize.height / 20.0,
-                bottom: screenSize.height / 20.0,
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Container(
-                  height: screenSize.height / 1.2,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(30.0)),
-                    color: Colors.blueGrey.withOpacity(0.5),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      GestureDetector(
-                        onTap: () => EditJobPage.show(
-                          context,
-                          database:
-                              Provider.of<Database>(context, listen: false),
-                        ),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(30.0),
-                              topRight: Radius.circular(30.0),
-                            ),
-                            color: Colors.black.withOpacity(0.5),
-                          ),
-                          height: 70,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              "Chat",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 32,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      StreamBuilder<List<Job>>(
-                        stream: database.jobsStream("2021", "10"),
-                        builder: (context, snapshot) {
-                          return ListItemsBuilder<Job>(
-                            snapshot: snapshot,
-                            itemBuilder: (context, job) => Dismissible(
-                              key: Key('job-${job.id}'),
-                              background: Container(color: Colors.red),
-                              direction: DismissDirection.endToStart,
-                              // onDismissed: (direction) => _delete(context, job),
-                              child: JobListTile(
-                                job: job,
-                                onTap: () =>
-                                    JobEntriesPage.show(context, database, job),
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
+          chat(context),
           Container(
             width: 2 * screenSize.width / 3.0,
             child: Padding(
@@ -221,7 +155,50 @@ class HomePageDesktop extends StatelessWidget {
                       elevation: 10.0,
                       child: ListTile(
                         leading: Text(
-                          "Setting",
+                          "GV Protokolle",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: GestureDetector(
+                      onTap: () {
+                        TimeManagerHomePage.show(
+                          context,
+                          database:
+                              Provider.of<Database>(context, listen: false),
+                        );
+                      },
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        color: Colors.black54.withOpacity(0.5),
+                        elevation: 10.0,
+                        child: ListTile(
+                          leading: Text(
+                            "Time Manager",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      color: Colors.black54.withOpacity(0.5),
+                      elevation: 10.0,
+                      child: ListTile(
+                        leading: Text(
+                          "Settings",
                           textAlign: TextAlign.center,
                           style: TextStyle(color: Colors.white),
                         ),
@@ -233,6 +210,86 @@ class HomePageDesktop extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget chat(BuildContext context) {
+    return Container(
+      width: screenSize.width / 3.0,
+      child: Padding(
+        padding: EdgeInsets.only(
+          top: screenSize.height / 20.0,
+          bottom: screenSize.height / 20.0,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Container(
+            height: screenSize.height / 1.2,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(5.0)),
+              color: Colors.blueGrey.withOpacity(0.5),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                GestureDetector(
+                  onTap: () => EditJobPage.show(
+                    context,
+                    database: Provider.of<Database>(context, listen: false),
+                  ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(30.0),
+                        topRight: Radius.circular(30.0),
+                      ),
+                      color: Colors.black.withOpacity(0.5),
+                    ),
+                    height: 70,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        "Chat",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 32,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Container(
+                  color: Colors.orange,
+                  child: Text(
+                    "Sorry, this feature is currently under construction...",
+                    style: TextStyle(fontSize: 20),
+                  ),
+                ),
+                Spacer(),
+                Container(
+                  color: Colors.green.withOpacity(0.5),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 500,
+                        child: TextField(),
+                      ),
+                      Spacer(),
+                      IconButton(
+                        onPressed: () {},
+                        icon: Icon(
+                          Icons.send,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
