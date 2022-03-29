@@ -171,6 +171,7 @@ class FirestoreDatabase implements Database {
       _service.collectionStream(
         path: APIPath.jobs(uid, year, month),
         builder: (data, documentId) => Job.fromMap(data, documentId),
+        sort: (lhs, rhs) => lhs.workDate.compareTo(rhs.workDate)
       );
 
   @override
@@ -262,5 +263,6 @@ class FirestoreDatabase implements Database {
   Stream<List<MyUser>> usersStream() => _service.collectionStream(
         path: APIPath.users(),
         builder: (data, documentId) => MyUser.fromMap(data, documentId),
+        sort: (lhs,rhs) => lhs.nickname.toLowerCase().compareTo(rhs.nickname.toLowerCase())
       );
 }

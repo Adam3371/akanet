@@ -1,5 +1,5 @@
+import 'package:akanet/app/home/time_tracker/time_tracker_home_page_desktop_old.dart';
 import 'package:akanet/app/home/time_tracker/time_tracker_home_page_desktop.dart';
-import 'package:akanet/app/home/time_tracker/time_tracker_home_page_desktop2.dart';
 import 'package:akanet/app/home/time_tracker/time_tracker_home_page_mobile.dart';
 import 'package:akanet/app/home/time_tracker/work_time_entry_page.dart';
 import 'package:akanet/app/home/models/job.dart';
@@ -68,7 +68,7 @@ class _TimeTrackerHomePageState extends State<TimeTrackerHomePage> {
               database: widget.database,
               screenSize: screenSize,
             )
-          : TimeTrackerHomePageDesktop2(
+          : TimeTrackerHomePageDesktop(
               database: widget.database,
               screenSize: screenSize,
             ),
