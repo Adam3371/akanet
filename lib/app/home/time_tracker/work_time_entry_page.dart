@@ -118,6 +118,9 @@ class _WorkTimeEntryPageState extends State<WorkTimeEntryPage> {
           workDate: _workDate,
         );
         await widget.database.setJob(job);
+        
+        
+
         Navigator.of(context).pop();
         // }
       } on FirebaseException catch (e) {

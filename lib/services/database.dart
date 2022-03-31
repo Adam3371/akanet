@@ -1,5 +1,6 @@
 import 'package:akanet/app/home/models/aircraft.dart';
 import 'package:akanet/app/home/models/aircraft_ticket.dart';
+import 'package:akanet/app/home/models/job_month_overview.dart';
 import 'package:akanet/app/home/models/my_user.dart';
 import 'package:akanet/app/home/models/it_ticket.dart';
 import 'package:akanet/app/home/models/it_ticket_category.dart';
@@ -37,6 +38,7 @@ abstract class Database {
   Stream<List<String>> jobYearsStream();
   Stream<List<Job>> jobsStream(String year, String month);
   Stream<List<Job>> jobsToApproveStream(String uid, String year, String month);
+
   Future<void> setJob(Job job);
   Future<void> approveJob({String id, Job job, String approveStatus});
   Future<void> deleteJob(Job job);
@@ -169,17 +171,19 @@ class FirestoreDatabase implements Database {
   @override
   Stream<List<Job>> jobsStream(String year, String month) =>
       _service.collectionStream(
-        path: APIPath.jobs(uid, year, month),
-        builder: (data, documentId) => Job.fromMap(data, documentId),
-        sort: (lhs, rhs) => lhs.workDate.compareTo(rhs.workDate)
-      );
+          path: APIPath.jobs(uid, year, month),
+          builder: (data, documentId) => Job.fromMap(data, documentId),
+          sort: (lhs, rhs) => lhs.workDate.compareTo(rhs.workDate));
 
   @override
   Stream<List<Job>> jobsToApproveStream(String id, String year, String month) =>
       _service.collectionStream(
         path: APIPath.jobs(id, year, month),
         builder: (data, documentId) => Job.fromMap(data, documentId),
+        sort: (lhd, rhd) => lhd.workDate.compareTo(rhd.workDate),
       );
+
+  //---------------------Update totals------------------------
 
   @override
   Future<void> setJob(Job job) => _service.setData(
@@ -261,8 +265,8 @@ class FirestoreDatabase implements Database {
 
   @override
   Stream<List<MyUser>> usersStream() => _service.collectionStream(
-        path: APIPath.users(),
-        builder: (data, documentId) => MyUser.fromMap(data, documentId),
-        sort: (lhs,rhs) => lhs.nickname.toLowerCase().compareTo(rhs.nickname.toLowerCase())
-      );
+      path: APIPath.users(),
+      builder: (data, documentId) => MyUser.fromMap(data, documentId),
+      sort: (lhs, rhs) =>
+          lhs.nickname.toLowerCase().compareTo(rhs.nickname.toLowerCase()));
 }

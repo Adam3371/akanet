@@ -23,6 +23,8 @@ class TimeManagerHomePageMobile extends StatefulWidget {
 
 class _TimeManagerHomePageMobileState extends State<TimeManagerHomePageMobile> {
   double totalWorkingHours = 0;
+  double openWorkingHours = 0;
+  double approvedWorkingHours = 0;
   String dropdownValue = "2021";
   String _jobYears = "2021";
 
@@ -44,18 +46,9 @@ class _TimeManagerHomePageMobileState extends State<TimeManagerHomePageMobile> {
   Widget build(BuildContext context) {
     return Container(
       width: widget.screenSize.width,
-      // decoration: BoxDecoration(
-      // image: DecorationImage(
-      //   image: AssetImage("images/mue31.jpg"),
-      //   fit: BoxFit.cover,
-      // ),
-      // ),
       child: Container(
-        // decoration: BoxDecoration(
-        //   borderRadius: BorderRadius.circular(30),
         color: Colors.grey.withOpacity(0.7),
         height: double.infinity,
-        // ),
         child: SingleChildScrollView(
           child: Column(
             children: [
@@ -74,10 +67,18 @@ class _TimeManagerHomePageMobileState extends State<TimeManagerHomePageMobile> {
                         print("++++++" + snapshot.data.toString());
                         List<Job> jobs = snapshot.data;
                         totalWorkingHours = 0;
+                        openWorkingHours = 0;
+                        approvedWorkingHours = 0;
+
                         for (int i = 0; i < jobs.length; i++) {
                           print(jobs[i].description);
                           Job job = jobs[i];
                           totalWorkingHours += job.workingHours;
+                          if (job.approveStatus == "approved") {
+                            approvedWorkingHours += job.workingHours;
+                          } else {
+                            openWorkingHours += job.workingHours;
+                          }
                         }
 
                         return Text(

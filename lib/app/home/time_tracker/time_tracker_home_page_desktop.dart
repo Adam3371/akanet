@@ -26,6 +26,8 @@ class TimeTrackerHomePageDesktop extends StatefulWidget {
 class _TimeTrackerHomePageDesktopState
     extends State<TimeTrackerHomePageDesktop> {
   double totalWorkingHours = 0;
+  double openWorkingHours = 0;
+  double approvedWorkingHours = 0;
   DateTime now = new DateTime.now();
   String dropdownValue = "2021";
   String _jobYears = "2021";
@@ -107,43 +109,6 @@ class _TimeTrackerHomePageDesktopState
                 child: Row(
                   children: [
                     Spacer(),
-                    // StreamBuilder<List<String>>(
-                    //   stream: widget.database.jobYearsStream(),
-                    //   builder: (context, snapshot) {
-                    //     if (!snapshot.hasData)
-                    //       return Center(
-                    //         child: CircularProgressIndicator(),
-                    //       );
-                    //     final List<String> items = snapshot.data;
-                    //     for (int i = 0; i < items.length; i++) {
-                    //       print("--------------${items[i]}");
-                    //     }
-                    //     return DropdownButton(
-                    //       onChanged: (valueSelectedByUser) {
-                    //         setState(
-                    //           () {
-                    //             print("--------" +
-                    //                 items
-                    //                     .firstWhere((element) =>
-                    //                         element == valueSelectedByUser)
-                    //                     );
-                    //             _jobYears = valueSelectedByUser;
-
-                    //           },
-                    //         );
-                    //       },
-                    //       value: _jobYears,
-                    //       hint: Text('Choose project'),
-                    //       isDense: true,
-                    //       items: items.map((value) {
-                    //         return DropdownMenuItem<String>(
-                    //           value: value,
-                    //           child: Text(value),
-                    //         );
-                    //       }).toList(),
-                    //     );
-                    //   },
-                    // ),
                     DropdownButton<String>(
                       value: _jobYears,
                       icon: const Icon(Icons.arrow_downward),
@@ -214,35 +179,52 @@ class _TimeTrackerHomePageDesktopState
               Container(
                 color: Colors.black54,
                 height: widget.screenSize.height / 10,
-                child: Row(
-                  children: [
-                    StreamBuilder(
-                      stream: widget.database.jobsStream(_jobYears, _jobMonth),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return CircularProgressIndicator();
-                        }
-                        // print("++++++" + snapshot.data.toString());
-                        List<Job> jobs = snapshot.data;
-                        totalWorkingHours = 0;
-                        for (int i = 0; i < jobs.length; i++) {
-                          // print(jobs[i].description);
-                          Job job = jobs[i];
-                          totalWorkingHours += job.workingHours;
-                        }
+                child: StreamBuilder(
+                  stream: widget.database.jobsStream(_jobYears, _jobMonth),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState ==
+                        ConnectionState.waiting) {
+                      return CircularProgressIndicator();
+                    }
+                    // print("++++++" + snapshot.data.toString());
+                    List<Job> jobs = snapshot.data;
+                    totalWorkingHours = 0;
+                    openWorkingHours = 0;
+                    approvedWorkingHours = 0;
+                    for (int i = 0; i < jobs.length; i++) {
+                      // print(jobs[i].description);
+                      Job job = jobs[i];
+                      totalWorkingHours += job.workingHours;
+                      if (job.approveStatus == "approved") {
+                        approvedWorkingHours += job.workingHours;
+                      } else {
+                        openWorkingHours += job.workingHours;
+                      }
+                    }
+                    TextStyle myTextStyle = new TextStyle(
+                        fontSize: 20, fontWeight: FontWeight.bold);
 
-                        return Text("Total: $totalWorkingHours");
-                      },
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        // totalWorkingHours = 0;
-                        setState(() {});
-                      },
-                      child: Text("update"),
-                    ),
-                  ],
+                    return Container(
+                      color: Colors.blueGrey,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Text(
+                            "Total: $totalWorkingHours h",
+                            style: myTextStyle,
+                          ),
+                          Text(
+                            "Approved: $approvedWorkingHours h",
+                            style: myTextStyle,
+                          ),
+                          Text(
+                            "Open: $openWorkingHours h",
+                            style: myTextStyle,
+                          ),
+                        ],
+                      ),
+                    );
+                  },
                 ),
               ),
               _listBuilder(context, widget.database),

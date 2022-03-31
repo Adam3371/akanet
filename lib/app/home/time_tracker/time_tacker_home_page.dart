@@ -1,4 +1,3 @@
-import 'package:akanet/app/home/time_tracker/time_tracker_home_page_desktop_old.dart';
 import 'package:akanet/app/home/time_tracker/time_tracker_home_page_desktop.dart';
 import 'package:akanet/app/home/time_tracker/time_tracker_home_page_mobile.dart';
 import 'package:akanet/app/home/time_tracker/work_time_entry_page.dart';

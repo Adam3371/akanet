@@ -1,7 +1,7 @@
-import 'package:akanet/app/home/models/my_user.dart';
-import 'package:akanet/app/home/time_manager/time_manager_approve_page_mobile.dart';
-import 'package:akanet/app/home/jobs/list_items_builder.dart';
 import 'package:akanet/app/home/models/job.dart';
+import 'package:akanet/app/home/models/my_user.dart';
+import 'package:akanet/app/home/time_manager/time_manager_approve_page_desktop.dart';
+import 'package:akanet/app/home/jobs/list_items_builder.dart';
 import 'package:akanet/services/database.dart';
 import 'package:flutter/material.dart';
 
@@ -21,8 +21,12 @@ class TimeManagerHomePageDesktop extends StatefulWidget {
       _TimeManagerHomePageDesktopState();
 }
 
-class _TimeManagerHomePageDesktopState extends State<TimeManagerHomePageDesktop> {
+class _TimeManagerHomePageDesktopState
+    extends State<TimeManagerHomePageDesktop> {
   double totalWorkingHours = 0;
+  double openWorkingHours = 0;
+  double approvedWorkingHours = 0;
+
   String dropdownValue = "2021";
   String _jobYears = "2021";
 
@@ -59,41 +63,41 @@ class _TimeManagerHomePageDesktopState extends State<TimeManagerHomePageDesktop>
         child: SingleChildScrollView(
           child: Column(
             children: [
-              Container(
-                color: Colors.black54,
-                height: widget.screenSize.height / 10,
-                child: Row(
-                  children: [
-                    StreamBuilder(
-                      stream: widget.database.jobsStream(_jobYears, _jobMonth),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return CircularProgressIndicator();
-                        }
-                        print("++++++" + snapshot.data.toString());
-                        List<Job> jobs = snapshot.data;
-                        totalWorkingHours = 0;
-                        for (int i = 0; i < jobs.length; i++) {
-                          print(jobs[i].description);
-                          Job job = jobs[i];
-                          totalWorkingHours += job.workingHours;
-                        }
+              // Container(
+              //   color: Colors.black54,
+              //   height: widget.screenSize.height / 10,
+              //   child: Row(
+              //     children: [
+              //       StreamBuilder(
+              //         stream: widget.database.jobsStream(_jobYears, _jobMonth),
+              //         builder: (context, snapshot) {
+              //           if (snapshot.connectionState ==
+              //               ConnectionState.waiting) {
+              //             return CircularProgressIndicator();
+              //           }
+              //           print("++++++" + snapshot.data.toString());
+              //           List<Job> jobs = snapshot.data;
+              //           totalWorkingHours = 0;
+              //           for (int i = 0; i < jobs.length; i++) {
+              //             print(jobs[i].description);
+              //             Job job = jobs[i];
+              //             totalWorkingHours += job.workingHours;
+              //           }
 
-                        return Text(
-                            "Open Hours to Approve: $totalWorkingHours");
-                      },
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        // totalWorkingHours = 0;
-                        setState(() {});
-                      },
-                      child: Text("update"),
-                    ),
-                  ],
-                ),
-              ),
+              //           return Text(
+              //               "Open Hours to Approve: $totalWorkingHours");
+              //         },
+              //       ),
+              //       TextButton(
+              //         onPressed: () {
+              //           // totalWorkingHours = 0;
+              //           setState(() {});
+              //         },
+              //         child: Text("update"),
+              //       ),
+              //     ],
+              //   ),
+              // ),
               _listBuilder(context, widget.database),
             ],
           ),
@@ -112,11 +116,9 @@ class _TimeManagerHomePageDesktopState extends State<TimeManagerHomePageDesktop>
         return ListItemsBuilder<MyUser>(
           snapshot: snapshot,
           itemBuilder: (context, user) {
-            print(user.name);
-            // direction: DismissDirection.endToStart,
             return ListTile(
               onTap: () {
-                TimeTrackerApprovePageMobile.show(
+                TimeTrackerApprovePageDesktop.show(
                   context,
                   user: user,
                   screenSize: widget.screenSize,
@@ -129,6 +131,39 @@ class _TimeManagerHomePageDesktopState extends State<TimeManagerHomePageDesktop>
                 // );
               },
               title: Text(user.nickname),
+              // leading: StreamBuilder(
+              //   stream: widget.database.jobsStream(
+              //     DateTime.now().year.toString(),
+              //     DateTime.now().month.toString(),
+              //   ),
+              //   builder: (context, snapshot) {
+              //     if (snapshot.connectionState == ConnectionState.waiting) {
+              //       return CircularProgressIndicator();
+              //     }
+                  
+              //     List<Job> jobs = snapshot.data;
+              //     return Container(
+              //         color: Colors.blueGrey,
+              //         child: Row(
+              //           mainAxisAlignment: MainAxisAlignment.spaceAround,
+              //           children: [
+              //             Text(
+              //               "Total: $totalWorkingHours h",
+              //               style: myTextStyle,
+              //             ),
+              //             Text(
+              //               "Approved: $approvedWorkingHours h",
+              //               style: myTextStyle,
+              //             ),
+              //             Text(
+              //               "Open: $openWorkingHours h",
+              //               style: myTextStyle,
+              //             ),
+              //           ],
+              //         ),
+              //       );
+              //   },
+              // ),
             );
           },
         );
