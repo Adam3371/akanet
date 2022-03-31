@@ -4,6 +4,7 @@ import 'package:akanet/app/home/jobs/list_items_builder.dart';
 import 'package:akanet/app/home/models/job.dart';
 import 'package:akanet/common_widgets/show_exception_alert_dialog.dart';
 import 'package:akanet/services/database.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -33,6 +34,9 @@ class _TimeTrackerHomePageDesktopState
   String _jobYears = "2021";
 
   String _jobMonth = "11";
+
+  List<String> _yearsList = [];
+  List<String> _monthList = [];
 
   Future<void> _delete(BuildContext context, Job job) async {
     bool _willBeDeleted = true;
@@ -79,6 +83,22 @@ class _TimeTrackerHomePageDesktopState
 
   @override
   void initState() {
+    final years = widget.database.jobYearsStream();
+    years.listen((year) {
+      if (year != null) _yearsList = year;
+      for (String y in year) {
+        final month = widget.database.jobMonthStream(y);
+        month.listen((month) {
+          if (month != null) 
+            _monthList = month;
+          for (String m in month) {}
+          print(_yearsList);
+          print(_monthList);
+        });
+      }
+      setState(() {});
+    });
+
     _jobYears = now.year.toString();
     _jobMonth = now.month.toString();
 
@@ -124,12 +144,8 @@ class _TimeTrackerHomePageDesktopState
                           _jobYears = newValue;
                         });
                       },
-                      items: <String>[
-                        '2022',
-                        '2021',
-                        '2020',
-                        '2019',
-                      ].map<DropdownMenuItem<String>>((String value) {
+                      items: _yearsList
+                          .map<DropdownMenuItem<String>>((String value) {
                         return DropdownMenuItem<String>(
                           value: value,
                           child: Text(value),
@@ -152,20 +168,8 @@ class _TimeTrackerHomePageDesktopState
                           _jobMonth = newValue;
                         });
                       },
-                      items: <String>[
-                        '1',
-                        '2',
-                        '3',
-                        '4',
-                        '5',
-                        '6',
-                        '7',
-                        '8',
-                        '9',
-                        '10',
-                        '11',
-                        '12'
-                      ].map<DropdownMenuItem<String>>((String value) {
+                      items: _monthList
+                          .map<DropdownMenuItem<String>>((String value) {
                         return DropdownMenuItem<String>(
                           value: value,
                           child: Text(value),
@@ -182,8 +186,7 @@ class _TimeTrackerHomePageDesktopState
                 child: StreamBuilder(
                   stream: widget.database.jobsStream(_jobYears, _jobMonth),
                   builder: (context, snapshot) {
-                    if (snapshot.connectionState ==
-                        ConnectionState.waiting) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
                       return CircularProgressIndicator();
                     }
                     // print("++++++" + snapshot.data.toString());
@@ -217,10 +220,37 @@ class _TimeTrackerHomePageDesktopState
                             "Approved: $approvedWorkingHours h",
                             style: myTextStyle,
                           ),
-                          Text(
-                            "Open: $openWorkingHours h",
-                            style: myTextStyle,
-                          ),
+                          // StreamBuilder(
+                          //   stream: widget.database.jobYearsStream(),
+                          //   builder: (context, snapshot) {
+                          //     if (snapshot.connectionState ==
+                          //         ConnectionState.waiting) {
+                          //       return CircularProgressIndicator();
+                          //     }
+
+                          //     QuerySnapshot snap = snapshot.data;
+                          //     List<DocumentSnapshot> documents = snap.docs;
+                          //     print(documents.length);
+
+                          //     return StreamBuilder(
+                          //         stream:
+                          //             widget.database.jobMonthStream("2022"),
+                          //         builder: (context, snapshot1) {
+                          //           QuerySnapshot snap1 = snapshot1.data;
+                          //           List<DocumentSnapshot> documents1 =
+                          //               snap1.docs;
+                          //               print("instream: " + documents1.length.toString());
+                          //           documents1.forEach(
+                          //             (element) {
+                          //               print(element.id.toString());
+                          //             },
+                          //           );
+
+                          //           return Text("test");
+                          //         });
+
+                          //   },
+                          // ),
                         ],
                       ),
                     );

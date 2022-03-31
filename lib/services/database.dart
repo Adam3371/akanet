@@ -36,6 +36,7 @@ abstract class Database {
 
   Stream<Job> jobStream({@required Job job});
   Stream<List<String>> jobYearsStream();
+  Stream jobMonthStream(String year);
   Stream<List<Job>> jobsStream(String year, String month);
   Stream<List<Job>> jobsToApproveStream(String uid, String year, String month);
 
@@ -123,17 +124,29 @@ class FirestoreDatabase implements Database {
 
   @override
   Stream<List<String>> jobYearsStream() {
-    var querySnapshot =
-        FirebaseFirestore.instance.collection("users/$uid/years").snapshots();
-    return querySnapshot.map((snapshot) {
-      final result = snapshot.docs.map((e) => e.id).toList();
-      print("resuld " + result.toString());
-      return result;
-    });
-    // var snapshots = querySnapshot;
-    // return querySnapshot;
+    List<String> years = [];
 
-    // return years.docs.map(years => years.data());
+    final reference = FirebaseFirestore.instance
+        .collection("users/$uid/years"); //users/$uid/years
+    final x = reference.snapshots().map((querySnap) => querySnap
+        .docs //Mapping Stream of CollectionReference to List<QueryDocumentSnapshot>
+        .map((doc) => doc
+            .id) //Getting each document ID from the data property of QueryDocumentSnapshot
+        .toList());
+    return x;
+    // return reference.snapshots();
+  }
+
+  @override
+  Stream jobMonthStream(String year) {
+    final reference = FirebaseFirestore.instance
+        .collection("users/$uid/years/$year/months"); //users/$uid/years
+    final x = reference.snapshots().map((querySnap) => querySnap
+        .docs //Mapping Stream of CollectionReference to List<QueryDocumentSnapshot>
+        .map((doc) => doc
+            .id) //Getting each document ID from the data property of QueryDocumentSnapshot
+        .toList());
+    return x;
   }
 
   @override
