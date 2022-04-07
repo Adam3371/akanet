@@ -61,6 +61,7 @@ flutter:
     - images/mue31_new.png
     - images/mue31_new_cut.png
     - images/background.jpg
+    - images/background_desktop.jpg
     
 
   # An image asset can refer to one or more resolution-specific "variants", see

@@ -66,7 +66,6 @@ class _WorkTimeEntryPageState extends State<WorkTimeEntryPage> {
       _subProjectId = widget.job.subprojectId;
       _subItemId = widget.job.projectId;
 
-
       double value = widget.job.workingHours;
       // if (value < 0) return 'Invalid Value';
       int flooredValue = value.floor();
@@ -118,6 +117,7 @@ class _WorkTimeEntryPageState extends State<WorkTimeEntryPage> {
           workDate: _workDate,
         );
         await widget.database.setJob(job);
+
         Navigator.of(context).pop();
         // }
       } on FirebaseException catch (e) {

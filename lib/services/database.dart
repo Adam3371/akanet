@@ -1,11 +1,13 @@
 import 'package:akanet/app/home/models/aircraft.dart';
 import 'package:akanet/app/home/models/aircraft_ticket.dart';
+import 'package:akanet/app/home/models/job_month_overview.dart';
 import 'package:akanet/app/home/models/my_user.dart';
 import 'package:akanet/app/home/models/it_ticket.dart';
 import 'package:akanet/app/home/models/it_ticket_category.dart';
 import 'package:akanet/app/home/models/project.dart';
 import 'package:akanet/app/home/models/sub_project.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 import 'package:akanet/app/home/models/entry.dart';
 import 'package:akanet/app/home/models/job.dart';
@@ -35,8 +37,10 @@ abstract class Database {
 
   Stream<Job> jobStream({@required Job job});
   Stream<List<String>> jobYearsStream();
+  Stream jobMonthStream(String year);
   Stream<List<Job>> jobsStream(String year, String month);
   Stream<List<Job>> jobsToApproveStream(String uid, String year, String month);
+
   Future<void> setJob(Job job);
   Future<void> approveJob({String id, Job job, String approveStatus});
   Future<void> deleteJob(Job job);
@@ -121,17 +125,29 @@ class FirestoreDatabase implements Database {
 
   @override
   Stream<List<String>> jobYearsStream() {
-    var querySnapshot =
-        FirebaseFirestore.instance.collection("users/$uid/years").snapshots();
-    return querySnapshot.map((snapshot) {
-      final result = snapshot.docs.map((e) => e.id).toList();
-      print("resuld " + result.toString());
-      return result;
-    });
-    // var snapshots = querySnapshot;
-    // return querySnapshot;
+    List<String> years = [];
 
-    // return years.docs.map(years => years.data());
+    final reference = FirebaseFirestore.instance
+        .collection("users/$uid/years"); //users/$uid/years
+    final x = reference.snapshots().map((querySnap) => querySnap
+        .docs //Mapping Stream of CollectionReference to List<QueryDocumentSnapshot>
+        .map((doc) => doc
+            .id) //Getting each document ID from the data property of QueryDocumentSnapshot
+        .toList());
+    return x;
+    // return reference.snapshots();
+  }
+
+  @override
+  Stream jobMonthStream(String year) {
+    final reference = FirebaseFirestore.instance
+        .collection("users/$uid/years/$year/months"); //users/$uid/years
+    final x = reference.snapshots().map((querySnap) => querySnap
+        .docs //Mapping Stream of CollectionReference to List<QueryDocumentSnapshot>
+        .map((doc) => doc
+            .id) //Getting each document ID from the data property of QueryDocumentSnapshot
+        .toList());
+    return x;
   }
 
   @override
@@ -169,16 +185,19 @@ class FirestoreDatabase implements Database {
   @override
   Stream<List<Job>> jobsStream(String year, String month) =>
       _service.collectionStream(
-        path: APIPath.jobs(uid, year, month),
-        builder: (data, documentId) => Job.fromMap(data, documentId),
-      );
+          path: APIPath.jobs(uid, year, month),
+          builder: (data, documentId) => Job.fromMap(data, documentId),
+          sort: (lhs, rhs) => lhs.workDate.compareTo(rhs.workDate));
 
   @override
   Stream<List<Job>> jobsToApproveStream(String id, String year, String month) =>
       _service.collectionStream(
         path: APIPath.jobs(id, year, month),
         builder: (data, documentId) => Job.fromMap(data, documentId),
+        sort: (lhd, rhd) => lhd.workDate.compareTo(rhd.workDate),
       );
+
+  //---------------------Update totals------------------------
 
   @override
   Future<void> setJob(Job job) => _service.setData(
@@ -260,7 +279,8 @@ class FirestoreDatabase implements Database {
 
   @override
   Stream<List<MyUser>> usersStream() => _service.collectionStream(
-        path: APIPath.users(),
-        builder: (data, documentId) => MyUser.fromMap(data, documentId),
-      );
+      path: APIPath.users(),
+      builder: (data, documentId) => MyUser.fromMap(data, documentId),
+      sort: (lhs, rhs) =>
+          lhs.nickname.toLowerCase().compareTo(rhs.nickname.toLowerCase()));
 }

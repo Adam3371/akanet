@@ -73,14 +73,16 @@ class SignInPage extends StatelessWidget {
       appBar: AppBar(
         title: Center(
           child: Text(
-            "Akanet",
+            "Akanet      ",
             style: TextStyle(
               fontSize: 30,
               fontWeight: FontWeight.bold,
             ),
           ),
         ),
-        leading: Image.asset("images/akaflieg-logo.png"),
+        leading: Container(
+
+          child: Image.asset("images/akaflieg-logo.png")),
         elevation: 10,
       ),
       backgroundColor: Colors.grey[300],
@@ -148,8 +150,8 @@ class SignInPage extends StatelessWidget {
         height: screenSize.height / 1.05,
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage("images/gruppenbild.jpg"),
-            fit: BoxFit.fill,
+            image: AssetImage("images/background_desktop.jpg"),
+            fit: BoxFit.cover,
           ),
         ),
         child: Row(
@@ -166,7 +168,7 @@ class SignInPage extends StatelessWidget {
                 ),
                 child: Container(
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
                     color: Colors.blueGrey.withOpacity(0.5),
                   ),
                   child: Column(
@@ -199,36 +201,17 @@ class SignInPage extends StatelessWidget {
                       SizedBox(
                         height: 15.0,
                       ),
-                      // Padding(
-                      //   padding: const EdgeInsets.all(20.0),
-                      //   child: SignInButton(
-                      //     text: "Register",
-                      //     // color: Colors.teal[600],
-                      //     // textColor: Colors.white,
-                      //     onPressed: isLoading
-                      //         ? null
-                      //         : () => _signInWithEmail(context),
-                      //   ),
-                      // ),
-                      // Text(
-                      //   "or",
-                      //   style: TextStyle(
-                      //     fontSize: 20.0,
-                      //     color: Colors.black87,
-                      //   ),
-                      //   textAlign: TextAlign.center,
-                      // ),
-                      // Padding(
-                      //   padding: const EdgeInsets.all(20.0),
-                      //   child: SignInButton(
-                      //     text: "Request Credentials",
-                      //     color: Colors.black54,
-                      //     textColor: Colors.white,
-                      //     onPressed: isLoading
-                      //         ? null
-                      //         : () => _signInAnonymously(context),
-                      //   ),
-                      // ),
+                      Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: SignInButton(
+                          text: "Register",
+                          // color: Colors.teal[600],
+                          // textColor: Colors.white,
+                          onPressed: isLoading
+                              ? null
+                              : () => _registerWithEmail(context),
+                        ),
+                      ),
                       SizedBox(
                         height: 15.0,
                       ),

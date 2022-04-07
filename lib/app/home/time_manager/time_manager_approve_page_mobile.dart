@@ -1,7 +1,6 @@
 import 'package:akanet/app/home/jobs/job_approve_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:akanet/app/home/models/my_user.dart';
-import 'package:akanet/app/home/time_tracker/work_time_entry_page.dart';
 import 'package:akanet/app/home/jobs/list_items_builder.dart';
 import 'package:akanet/app/home/models/job.dart';
 import 'package:akanet/common_widgets/show_exception_alert_dialog.dart';
@@ -67,7 +66,7 @@ class _TimeTrackerApprovePageMobileState
     try {
       print(status);
       await widget.database
-          .approveJob(id: widget.user.id, job: thisJob, approveStatus: status);
+          .approveJob(id: widget.user.uid, job: thisJob, approveStatus: status);
     } on FirebaseException catch (e) {
       showExceptionAlertDialog(
         context,
@@ -217,15 +216,20 @@ class _TimeTrackerApprovePageMobileState
   }
 
   _listBuilder(BuildContext context, MyUser user, Database database) {
+    print("in list builder");
     return StreamBuilder<List<Job>>(
-      stream: database.jobsToApproveStream(user.id, _jobYears, _jobMonth),
+      stream: database.jobsToApproveStream(user.uid, _jobYears, _jobMonth),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
+          print("waiting");
           return CircularProgressIndicator();
         }
+        print("after waiting " + snapshot.data.length.toString() + "   " + _jobMonth.toString());
+      
         return ListItemsBuilder<Job>(
           snapshot: snapshot,
           itemBuilder: (context, job) {
+            print("job:: " + job.description);
             return JobApproveListTile(
               approve: _approveSingle,
               job: job,

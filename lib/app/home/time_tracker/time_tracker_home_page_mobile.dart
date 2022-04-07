@@ -2,7 +2,6 @@ import 'package:akanet/app/home/time_tracker/work_time_entry_page.dart';
 import 'package:akanet/app/home/jobs/job_list_tile.dart';
 import 'package:akanet/app/home/jobs/list_items_builder.dart';
 import 'package:akanet/app/home/models/job.dart';
-import 'package:akanet/common_widgets/show_alert_dialog.dart';
 import 'package:akanet/common_widgets/show_exception_alert_dialog.dart';
 import 'package:akanet/services/database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -26,6 +25,9 @@ class TimeTrackerHomePageMobile extends StatefulWidget {
 
 class _TimeTrackerHomePageMobileState extends State<TimeTrackerHomePageMobile> {
   double totalWorkingHours = 0;
+  double approvedWorkingHours = 0;
+  double openWorkingHours = 0;
+
   DateTime now = new DateTime.now();
   String dropdownValue = "2021";
   String _jobYears = "2021";
@@ -108,43 +110,6 @@ class _TimeTrackerHomePageMobileState extends State<TimeTrackerHomePageMobile> {
                 child: Row(
                   children: [
                     Spacer(),
-                    // StreamBuilder<List<String>>(
-                    //   stream: widget.database.jobYearsStream(),
-                    //   builder: (context, snapshot) {
-                    //     if (!snapshot.hasData)
-                    //       return Center(
-                    //         child: CircularProgressIndicator(),
-                    //       );
-                    //     final List<String> items = snapshot.data;
-                    //     for (int i = 0; i < items.length; i++) {
-                    //       print("--------------${items[i]}");
-                    //     }
-                    //     return DropdownButton(
-                    //       onChanged: (valueSelectedByUser) {
-                    //         setState(
-                    //           () {
-                    //             print("--------" +
-                    //                 items
-                    //                     .firstWhere((element) =>
-                    //                         element == valueSelectedByUser)
-                    //                     );
-                    //             _jobYears = valueSelectedByUser;
-
-                    //           },
-                    //         );
-                    //       },
-                    //       value: _jobYears,
-                    //       hint: Text('Choose project'),
-                    //       isDense: true,
-                    //       items: items.map((value) {
-                    //         return DropdownMenuItem<String>(
-                    //           value: value,
-                    //           child: Text(value),
-                    //         );
-                    //       }).toList(),
-                    //     );
-                    //   },
-                    // ),
                     DropdownButton<String>(
                       value: _jobYears,
                       icon: const Icon(Icons.arrow_downward),
@@ -226,11 +191,20 @@ class _TimeTrackerHomePageMobileState extends State<TimeTrackerHomePageMobile> {
                         }
                         // print("++++++" + snapshot.data.toString());
                         List<Job> jobs = snapshot.data;
-                        totalWorkingHours = 0;
+                        totalWorkingHours = 0;                        
+                        openWorkingHours = 0;
+                        approvedWorkingHours = 0;
                         for (int i = 0; i < jobs.length; i++) {
                           // print(jobs[i].description);
                           Job job = jobs[i];
                           totalWorkingHours += job.workingHours;
+                          if(job.approveStatus == "approved"){
+                            approvedWorkingHours += job.workingHours;
+                          }
+                          else
+                          {
+                            openWorkingHours += job.workingHours;
+                          }
                         }
 
                         return Text("Total: $totalWorkingHours");
