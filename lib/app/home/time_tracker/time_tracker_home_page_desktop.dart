@@ -33,7 +33,7 @@ class _TimeTrackerHomePageDesktopState
   String dropdownValue = "2021";
   String _jobYears = "2021";
 
-  String _jobMonth = "11";
+  String _jobMonth = "1";
 
   List<String> _yearsList = [];
   List<String> _monthList = [];
@@ -85,18 +85,19 @@ class _TimeTrackerHomePageDesktopState
   void initState() {
     final years = widget.database.jobYearsStream();
     years.listen((year) {
-      if (year != null) _yearsList = year;
-      for (String y in year) {
-        final month = widget.database.jobMonthStream(y);
-        month.listen((month) {
-          if (month != null) 
-            _monthList = month;
-          for (String m in month) {}
-          print(_yearsList);
-          print(_monthList);
-        });
-      }
-      setState(() {});
+      _yearsList = year;
+
+      final month = widget.database.jobMonthStream(_jobYears);
+      month.listen((month) {
+        // if (month != null) _monthList = ['y', '1', '2', '4'];
+        print(_monthList);
+        _monthList = month;
+
+        // for (String m in month) {}
+        // print(_yearsList);
+        print(_monthList);
+        setState(() {});
+      });
     });
 
     _jobYears = now.year.toString();
@@ -140,8 +141,16 @@ class _TimeTrackerHomePageDesktopState
                         color: Colors.deepPurpleAccent,
                       ),
                       onChanged: (String newValue) {
-                        setState(() {
-                          _jobYears = newValue;
+                        _jobYears = newValue;
+                        final month = widget.database.jobMonthStream(_jobYears);
+                        month.listen((month) {
+                          setState(() {
+                            _monthList = month;
+                            _jobMonth =
+                                _monthList.contains(now.month.toString())
+                                    ? now.month.toString()
+                                    : _monthList.last;
+                          });
                         });
                       },
                       items: _yearsList
@@ -159,10 +168,10 @@ class _TimeTrackerHomePageDesktopState
                       iconSize: 24,
                       elevation: 16,
                       style: const TextStyle(color: Colors.deepPurple),
-                      underline: Container(
-                        height: 2,
-                        color: Colors.deepPurpleAccent,
-                      ),
+                      // underline: Container(
+                      //   height: 2,
+                      //   color: Colors.deepPurpleAccent,
+                      // ),
                       onChanged: (String newValue) {
                         setState(() {
                           _jobMonth = newValue;
