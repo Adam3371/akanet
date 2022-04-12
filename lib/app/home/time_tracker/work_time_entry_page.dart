@@ -1,3 +1,5 @@
+import 'package:akanet/app/home/models/job_month_overview.dart';
+import 'package:akanet/app/home/models/job_year_overview.dart';
 import 'package:akanet/app/home/models/project.dart';
 import 'package:akanet/app/home/models/sub_project.dart';
 import 'package:akanet/common_widgets/date_time_picker.dart';
@@ -45,6 +47,7 @@ class _WorkTimeEntryPageState extends State<WorkTimeEntryPage> {
   String _subProject;
   String _subProjectId;
   String _subItemId;
+  bool _isWerk;
 
   DateTime _workDate;
   int _currentHourValue = 0;
@@ -65,6 +68,7 @@ class _WorkTimeEntryPageState extends State<WorkTimeEntryPage> {
       _projectId = widget.job.projectId;
       _subProjectId = widget.job.subprojectId;
       _subItemId = widget.job.projectId;
+      _isWerk = widget.job.isWerk;
 
       double value = widget.job.workingHours;
       // if (value < 0) return 'Invalid Value';
@@ -77,7 +81,7 @@ class _WorkTimeEntryPageState extends State<WorkTimeEntryPage> {
 
   bool _validateAndSaveForm() {
     final form = _formKey.currentState;
-    if (form.validate()) {
+    if (form.validate() && _project != null) {
       form.save();
       return true;
     }
@@ -87,21 +91,47 @@ class _WorkTimeEntryPageState extends State<WorkTimeEntryPage> {
   Future<void> _submit() async {
     if (_validateAndSaveForm()) {
       try {
-        final jobs = await widget.database
-            .jobsStream(_workDate.year.toString(), _workDate.month.toString())
-            .first;
-        final allNames = jobs.map((job) => job.description).toList();
-        if (widget.job != null) {
-          allNames.remove(widget.job.description);
+        // final jobs = await widget.database
+        //     .jobsQuery(_workDate.year.toString(), _workDate.month.toString());
+
+        // final jobList = jobs.docs
+        //     .map((DocumentSnapshot e) => Job.fromMap(e.data(), null))
+        //     .toList();
+        // for (Job j in jobList) {
+        //   print(" _ " + j.workingHours.toString());
+        // }
+        JobMonthOverview jobMonthStat;
+        JobYearOverview jobYearStat;
+
+        final jobMonthStatusReq = await widget.database.jobsMonthQuery(
+            _workDate.year.toString(), _workDate.month.toString());
+        if (jobMonthStatusReq != null) {
+          jobMonthStat =
+              JobMonthOverview.fromMap(jobMonthStatusReq.data(), null);
+        } else {
+          print("1 Error in finding overview");
+          jobMonthStat = JobMonthOverview(
+            totalHours: 0,
+            approvedHours: 0,
+            totWerkHours: 0,
+            appWerkHours: 0,
+          );
         }
-        // if (allNames.contains(_name)) {
-        //   showAlertDialog(
-        //     context,
-        //     title: 'Name already used',
-        //     content: 'Please choose a different job name',
-        //     defaultActionText: 'OK',
-        //   );
-        // } else {
+
+        final jobYearStausReq =
+            await widget.database.jobsYearQuery(_workDate.year.toString());
+        if (jobYearStausReq != null) {
+          jobYearStat = JobYearOverview.fromMap(jobYearStausReq.data(), null);
+        } else {
+          print("2 Error in finding overview");
+          jobYearStat = JobYearOverview(
+            totalHours: 0,
+            approvedHours: 0,
+            totWerkHours: 0,
+            appWerkHours: 0,
+          );
+        }
+
         _workingHours = _currentHourValue + (_currentMinutesValue / 60);
 
         final id = widget.job?.id ?? documentIdFromCurrentDate();
@@ -115,8 +145,18 @@ class _WorkTimeEntryPageState extends State<WorkTimeEntryPage> {
           description: _name,
           workingHours: _workingHours,
           workDate: _workDate,
+          isWerk: _isWerk,
         );
-        await widget.database.setJob(job);
+
+        jobMonthStat.totalHours += job.workingHours;
+        jobYearStat.totalHours += job.workingHours;
+
+        if (job.isWerk) {
+          jobMonthStat.totWerkHours += job.workingHours;
+          jobYearStat.totWerkHours += job.workingHours;
+        }
+
+        await widget.database.setBatchJob(job, jobMonthStat, jobYearStat);
 
         Navigator.of(context).pop();
         // }
@@ -200,13 +240,14 @@ class _WorkTimeEntryPageState extends State<WorkTimeEntryPage> {
                   child: CircularProgressIndicator(),
                 );
               final List<Project> items = snapshot.data;
-              for (int i = 0; i < items.length; i++) {
-                // print("${items[i].name}");
-              }
               return DropdownButton(
                 onChanged: (valueSelectedByUser) {
                   setState(
                     () {
+                      _isWerk = items
+                          .firstWhere(
+                              (element) => element.id == valueSelectedByUser)
+                          .isWerkstatt;
                       print("--------" +
                           items
                               .firstWhere((element) =>
@@ -245,9 +286,6 @@ class _WorkTimeEntryPageState extends State<WorkTimeEntryPage> {
                   child: CircularProgressIndicator(),
                 );
               final List<SubProject> subItems = snapshot.data;
-              for (int i = 0; i < subItems.length; i++) {
-                // print("${subItems[i].name}");
-              }
 
               return DropdownButton(
                 onChanged: (valueSelectedByUser) {
@@ -263,7 +301,9 @@ class _WorkTimeEntryPageState extends State<WorkTimeEntryPage> {
                   );
                 },
                 value: _subProjectId,
-                hint: Text('Choose project'),
+                hint: subItems.length == 0
+                    ? Text("No sub project")
+                    : Text('Choose sub project'),
                 isDense: true,
                 items: subItems.map(
                   (subItem) {
@@ -276,6 +316,15 @@ class _WorkTimeEntryPageState extends State<WorkTimeEntryPage> {
               );
             },
           ),
+          Checkbox(
+            value: _isWerk == null ? false : _isWerk,
+            onChanged: (checkt) {
+              setState(() {
+                _isWerk = checkt;
+              });
+            },
+          ),
+          Text("Is Werkstatt"),
         ],
       ),
       SizedBox(

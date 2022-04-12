@@ -1,3 +1,4 @@
+import 'package:akanet/app/home/models/job_month_overview.dart';
 import 'package:akanet/app/home/time_tracker/work_time_entry_page.dart';
 import 'package:akanet/app/home/jobs/job_list_tile.dart';
 import 'package:akanet/app/home/jobs/list_items_builder.dart';
@@ -26,17 +27,80 @@ class TimeTrackerHomePageDesktop extends StatefulWidget {
 
 class _TimeTrackerHomePageDesktopState
     extends State<TimeTrackerHomePageDesktop> {
+  bool isGettingUpdated = false;
   double totalWorkingHours = 0;
   double openWorkingHours = 0;
   double approvedWorkingHours = 0;
   DateTime now = new DateTime.now();
-  String dropdownValue = "2021";
-  String _jobYears = "2021";
+  String dropdownValue;
+  String _jobYears;
 
-  String _jobMonth = "1";
+  String _jobMonth;
 
   List<String> _yearsList = [];
   List<String> _monthList = [];
+
+  Future<void> _updateMonthHours() async {
+    try {
+      setState(() {
+        isGettingUpdated = true;
+      });
+
+      double totalHours = 0;
+      double approvedHours = 0;
+      double totWerkHours = 0;
+      double appWerkHours = 0;
+
+      final years = widget.database.jobYearsStream();
+      years.listen((year) {
+        _yearsList = year;
+        for (String y in year) {
+          final months = widget.database.jobMonthStream(_jobYears);
+          months.listen((month) {
+            print(_monthList);
+            _monthList = month;
+            for (String m in month) {
+              JobMonthOverview jMO;
+              final jobs = widget.database.jobsStream(_jobYears, m);
+              jobs.listen((j) {
+                for (Job job in j) {
+                  totalHours += job.workingHours;
+                  if (job.approveStatus == "approved") {
+                    approvedHours += job.workingHours;
+                  }
+                  try {
+                    if (job.isWerk) {
+                      if (job.approveStatus == "approved") {
+                        appWerkHours += job.workingHours;
+                      }
+                      totWerkHours += job.workingHours;
+                    }
+                  } catch (e) {
+                    print("Internal Error: " + e.toString());
+                  }
+                }
+                final jobMonthOverview = JobMonthOverview(
+                  totalHours: totalHours,
+                  approvedHours: approvedHours,
+                  totWerkHours: totWerkHours,
+                  appWerkHours: appWerkHours,
+                );
+                jMO = jobMonthOverview;
+                print("hours: " + jobMonthOverview.totalHours.toString());
+              });
+              widget.database.setMonthUpdate(widget.database.getMyUid(), y, m, jMO);
+            }
+          });
+        }
+
+        setState(() {
+          isGettingUpdated = false;
+        });
+      });
+    } catch (e) {
+      print("External Error: " + e);
+    }
+  }
 
   Future<void> _delete(BuildContext context, Job job) async {
     bool _willBeDeleted = true;
@@ -168,10 +232,10 @@ class _TimeTrackerHomePageDesktopState
                       iconSize: 24,
                       elevation: 16,
                       style: const TextStyle(color: Colors.deepPurple),
-                      // underline: Container(
-                      //   height: 2,
-                      //   color: Colors.deepPurpleAccent,
-                      // ),
+                      underline: Container(
+                        height: 2,
+                        color: Colors.deepPurpleAccent,
+                      ),
                       onChanged: (String newValue) {
                         setState(() {
                           _jobMonth = newValue;
@@ -229,6 +293,17 @@ class _TimeTrackerHomePageDesktopState
                             "Approved: $approvedWorkingHours h",
                             style: myTextStyle,
                           ),
+                          isGettingUpdated
+                              ? CircularProgressIndicator()
+                              : MaterialButton(
+                                  child: Text(
+                                    "update",
+                                    style: myTextStyle,
+                                  ),
+                                  onPressed: () {
+                                    _updateMonthHours();
+                                  },
+                                )
                           // StreamBuilder(
                           //   stream: widget.database.jobYearsStream(),
                           //   builder: (context, snapshot) {
