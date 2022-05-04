@@ -103,6 +103,20 @@ class _WorkTimeEntryPageState extends State<WorkTimeEntryPage> {
         JobMonthOverview jobMonthStat;
         JobYearOverview jobYearStat;
 
+        final jobYearStausReq =
+            await widget.database.jobsYearQuery(_workDate.year.toString());
+        if (jobYearStausReq != null) {
+          jobYearStat = JobYearOverview.fromMap(jobYearStausReq.data(), null);
+        } else {
+          print("2 Error in finding overview");
+          jobYearStat = JobYearOverview(
+            totalHours: 0,
+            approvedHours: 0,
+            totWerkHours: 0,
+            appWerkHours: 0,
+          );
+        }
+
         final jobMonthStatusReq = await widget.database.jobsMonthQuery(
             _workDate.year.toString(), _workDate.month.toString());
         if (jobMonthStatusReq != null) {
@@ -111,20 +125,6 @@ class _WorkTimeEntryPageState extends State<WorkTimeEntryPage> {
         } else {
           print("1 Error in finding overview");
           jobMonthStat = JobMonthOverview(
-            totalHours: 0,
-            approvedHours: 0,
-            totWerkHours: 0,
-            appWerkHours: 0,
-          );
-        }
-
-        final jobYearStausReq =
-            await widget.database.jobsYearQuery(_workDate.year.toString());
-        if (jobYearStausReq != null) {
-          jobYearStat = JobYearOverview.fromMap(jobYearStausReq.data(), null);
-        } else {
-          print("2 Error in finding overview");
-          jobYearStat = JobYearOverview(
             totalHours: 0,
             approvedHours: 0,
             totWerkHours: 0,
@@ -337,6 +337,7 @@ class _WorkTimeEntryPageState extends State<WorkTimeEntryPage> {
         onSaved: (value) => _name = value,
       ),
       Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
             "Hours",
@@ -352,6 +353,44 @@ class _WorkTimeEntryPageState extends State<WorkTimeEntryPage> {
             haptics: true,
             onChanged: (value) => setState(() => _currentHourValue = value),
           ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              MaterialButton(
+                child: Text(
+                  "+",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                onPressed: () {
+                  if (_currentHourValue < 24) {
+                    setState(() {
+                      _currentHourValue += 1;
+                    });
+                  }
+                },
+              ),
+              // Spacer(),
+              MaterialButton(
+                child: Text(
+                  "-",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                onPressed: () {
+                  if (_currentHourValue > 0) {
+                    setState(() {
+                      _currentHourValue -= 1;
+                    });
+                  }
+                },
+              ),
+            ],
+          ),
           Text(
             "Minutes",
             style: TextStyle(
@@ -365,6 +404,48 @@ class _WorkTimeEntryPageState extends State<WorkTimeEntryPage> {
             step: 15,
             haptics: true,
             onChanged: (value) => setState(() => _currentMinutesValue = value),
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              MaterialButton(
+                child: Text(
+                  "+",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                onPressed: () {
+                  if(_currentMinutesValue < 45)
+                  {
+                    setState(() {
+                      _currentMinutesValue += 15;  
+                    });
+                    
+                  }
+                },
+              ),
+              // Spacer(),
+              MaterialButton(
+                child: Text(
+                  "-",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                onPressed: () {
+                  if(_currentMinutesValue > 0)
+                  {
+                    setState(() {
+                      _currentMinutesValue -= 15;  
+                    });
+                    
+                  }
+                },
+              ),
+            ],
           ),
         ],
       ),

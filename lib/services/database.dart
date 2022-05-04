@@ -212,32 +212,22 @@ class FirestoreDatabase implements Database {
 
   @override
   Future<DocumentSnapshot> jobsMonthQuery(String year, String month) {
-    
     try {
       var toTest = FirebaseFirestore.instance
-        .doc("users/$uid/years/$year/months/$month").get();
+          .doc("users/$uid/years/$year/months/$month")
+          .get();
+      return toTest;
     } catch (e) {
       print("Collection not find 1: " + e.toString());
-      return null;
-    }
-
-    final reference = FirebaseFirestore.instance
-        .doc("users/$uid/years/$year/months/$month"); //users/$uid/years
-    try {
-      final jobs = reference.get();
-      return jobs;
-    } on FirebaseException catch (e) {
-      print(e.toString());
       return null;
     }
   }
 
   @override
   Future<DocumentSnapshot> jobsYearQuery(String year) {
-
     try {
-      var toTest = FirebaseFirestore.instance
-        .doc("users/$uid/years/$year").get();
+      var toTest =
+          FirebaseFirestore.instance.doc("users/$uid/years/$year").get();
     } catch (e) {
       print("Collection not find 2: " + e.toString());
       return null;

@@ -51,52 +51,46 @@ class _TimeTrackerHomePageDesktopState
       double totWerkHours = 0;
       double appWerkHours = 0;
 
-      final years = widget.database.jobYearsStream();
-      years.listen((year) {
-        _yearsList = year;
-        for (String y in year) {
-          final months = widget.database.jobMonthStream(_jobYears);
-          months.listen((month) {
-            print(_monthList);
-            _monthList = month;
-            for (String m in month) {
-              JobMonthOverview jMO;
-              final jobs = widget.database.jobsStream(_jobYears, m);
-              jobs.listen((j) {
-                for (Job job in j) {
-                  totalHours += job.workingHours;
-                  if (job.approveStatus == "approved") {
-                    approvedHours += job.workingHours;
-                  }
-                  try {
-                    if (job.isWerk) {
-                      if (job.approveStatus == "approved") {
-                        appWerkHours += job.workingHours;
-                      }
-                      totWerkHours += job.workingHours;
-                    }
-                  } catch (e) {
-                    print("Internal Error: " + e.toString());
-                  }
-                }
-                final jobMonthOverview = JobMonthOverview(
-                  totalHours: totalHours,
-                  approvedHours: approvedHours,
-                  totWerkHours: totWerkHours,
-                  appWerkHours: appWerkHours,
-                );
-                jMO = jobMonthOverview;
-                print("hours: " + jobMonthOverview.totalHours.toString());
-              });
-              widget.database.setMonthUpdate(widget.database.getMyUid(), y, m, jMO);
+      JobMonthOverview jMO = null;
+      final jobs = widget.database.jobsStream(_jobYears, _jobMonth);
+      jobs.listen((j) {
+        for (Job job in j) {
+          totalHours += job.workingHours;
+          if (job.approveStatus == "approved") {
+            approvedHours += job.workingHours;
+          }
+          try {
+            if (job.isWerk) {
+              if (job.approveStatus == "approved") {
+                appWerkHours += job.workingHours;
+              }
+              totWerkHours += job.workingHours;
             }
-          });
+          } catch (e) {
+            print("Internal Error: " + e.toString());
+          }
         }
+        final jobMonthOverview = JobMonthOverview(
+          totalHours: totalHours,
+          approvedHours: approvedHours,
+          totWerkHours: totWerkHours,
+          appWerkHours: appWerkHours,
+        );
+        jMO = jobMonthOverview;
+        print("hours: " + jobMonthOverview.totalHours.toString());
 
         setState(() {
           isGettingUpdated = false;
         });
       });
+
+      if (jMO != null) {
+        print("write update hours: " + jMO.totalHours.toString());
+        widget.database.setMonthUpdate(
+            widget.database.getMyUid(), _jobYears, _jobMonth, jMO);
+      } else {
+        print("else");
+      }
     } catch (e) {
       print("External Error: " + e);
     }
@@ -147,26 +141,28 @@ class _TimeTrackerHomePageDesktopState
 
   @override
   void initState() {
+    _jobYears = now.year.toString();
+
     final years = widget.database.jobYearsStream();
     years.listen((year) {
       _yearsList = year;
-
+      print(year);
       final month = widget.database.jobMonthStream(_jobYears);
       month.listen((month) {
-        // if (month != null) _monthList = ['y', '1', '2', '4'];
-        print(_monthList);
         _monthList = month;
 
-        // for (String m in month) {}
-        // print(_yearsList);
         print(_monthList);
-        setState(() {});
+
+        if (_monthList.contains(now.month.toString())) {
+          _jobMonth = now.month.toString();
+        } else {
+          _jobMonth = _monthList.last;
+        }
+
+        _updateMonthHours();
+        // update
       });
     });
-
-    _jobYears = now.year.toString();
-    _jobMonth = now.month.toString();
-
     super.initState();
   }
 
@@ -214,6 +210,7 @@ class _TimeTrackerHomePageDesktopState
                                 _monthList.contains(now.month.toString())
                                     ? now.month.toString()
                                     : _monthList.last;
+                            _updateMonthHours();
                           });
                         });
                       },
@@ -239,6 +236,7 @@ class _TimeTrackerHomePageDesktopState
                       onChanged: (String newValue) {
                         setState(() {
                           _jobMonth = newValue;
+                          _updateMonthHours();
                         });
                       },
                       items: _monthList
@@ -250,6 +248,12 @@ class _TimeTrackerHomePageDesktopState
                       }).toList(),
                     ),
                     Spacer(),
+                    isGettingUpdated
+                        ? CircularProgressIndicator()
+                        : Icon(
+                            Icons.check_sharp,
+                            color: Colors.green,
+                          )
                   ],
                 ),
               ),
