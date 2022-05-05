@@ -42,6 +42,7 @@ class _EditJobPageState extends State<EditJobPage> {
   String _project;
   String _subProject;
   String _subItemId;
+  bool _isWerk;
 
   @override
   void initState() {
@@ -49,6 +50,7 @@ class _EditJobPageState extends State<EditJobPage> {
     if (widget.job != null) {
       _name = widget.job.description;
       _ratePerHour = widget.job.workingHours;
+      
     }
   }
 
@@ -88,6 +90,8 @@ class _EditJobPageState extends State<EditJobPage> {
             workDate: widget.job.workDate,
             description: _name,
             workingHours: _ratePerHour,
+            
+             
           );
           await widget.database.setJob(job);
           Navigator.of(context).pop();

@@ -1,8 +1,5 @@
-import 'package:akanet/app/home/jobs/job_approve_list_tile.dart';
 import 'package:akanet/app/home/models/aircraft.dart';
 import 'package:akanet/app/home/models/aircraft_ticket.dart';
-import 'package:akanet/app/home/models/job_month_overview.dart';
-import 'package:akanet/app/home/models/job_year_overview.dart';
 import 'package:akanet/app/home/models/my_user.dart';
 import 'package:akanet/app/home/models/it_ticket.dart';
 import 'package:akanet/app/home/models/it_ticket_category.dart';
@@ -42,16 +39,14 @@ abstract class Database {
   Stream jobMonthStream(String year);
   Stream<List<Job>> jobsStream(String year, String month);
   Future<QuerySnapshot> jobsQuery(String year, String month);
-  Future<DocumentSnapshot> jobsMonthQuery(String year, String month);
-  Future<DocumentSnapshot> jobsYearQuery(String year);
+  // Future<DocumentSnapshot> jobsMonthQuery(String year, String month);
+  // Future<DocumentSnapshot> jobsYearQuery(String year);
   Stream<List<Job>> jobsToApproveStream(String uid, String year, String month);
 
-  Future<void> setMonthUpdate(
-      String id, String year, String month, JobMonthOverview jobMonthOverview);
+  Future<void> setMonthUpdate(String id, String year, String month);
 
   Future<void> setJob(Job job);
-  Future<void> setBatchJob(Job job, JobMonthOverview jobMonthOverview,
-      JobYearOverview jobYearOverview);
+  Future<void> setBatchJob(Job job);
   Future<void> approveJob({String id, Job job, String approveStatus});
   Future<void> deleteJob(Job job);
 
@@ -210,40 +205,40 @@ class FirestoreDatabase implements Database {
     return jobs;
   }
 
-  @override
-  Future<DocumentSnapshot> jobsMonthQuery(String year, String month) {
-    try {
-      var toTest = FirebaseFirestore.instance
-          .doc("users/$uid/years/$year/months/$month")
-          .get();
-      return toTest;
-    } catch (e) {
-      print("Collection not find 1: " + e.toString());
-      return null;
-    }
-  }
+  // @override
+  // Future<DocumentSnapshot> jobsMonthQuery(String year, String month) {
+  //   try {
+  //     var toTest = FirebaseFirestore.instance
+  //         .doc("users/$uid/years/$year/months/$month")
+  //         .get();
+  //     return toTest;
+  //   } catch (e) {
+  //     print("Collection not find 1: " + e.toString());
+  //     return null;
+  //   }
+  // }
 
-  @override
-  Future<DocumentSnapshot> jobsYearQuery(String year) {
-    try {
-      var toTest =
-          FirebaseFirestore.instance.doc("users/$uid/years/$year").get();
-    } catch (e) {
-      print("Collection not find 2: " + e.toString());
-      return null;
-    }
+  // @override
+  // Future<DocumentSnapshot> jobsYearQuery(String year) {
+  //   try {
+  //     var toTest =
+  //         FirebaseFirestore.instance.doc("users/$uid/years/$year").get();
+  //   } catch (e) {
+  //     print("Collection not find 2: " + e.toString());
+  //     return null;
+  //   }
 
-    final reference = FirebaseFirestore.instance
-        .doc("users/$uid/years/$year"); //users/$uid/years
+  //   final reference = FirebaseFirestore.instance
+  //       .doc("users/$uid/years/$year"); //users/$uid/years
 
-    try {
-      final jobs = reference.get();
-      return jobs;
-    } on FirebaseException catch (e) {
-      print(e.toString());
-      return null;
-    }
-  }
+  //   try {
+  //     final jobs = reference.get();
+  //     return jobs;
+  //   } on FirebaseException catch (e) {
+  //     print(e.toString());
+  //     return null;
+  //   }
+  // }
 
   @override
   Stream<List<Job>> jobsToApproveStream(String id, String year, String month) =>
@@ -256,15 +251,18 @@ class FirestoreDatabase implements Database {
   //---------------------Update totals------------------------
 
   @override
-  Future<void> setMonthUpdate(String id, String year, String month,
-          JobMonthOverview jobMonthOverview) =>
+  Future<void> setMonthUpdate(
+    String id,
+    String year,
+    String month,
+  ) =>
       _service.setData(
         path: APIPath.jobMonthUpdate(
           id,
           year,
           month,
         ),
-        data: jobMonthOverview.toMap(),
+        data: {null: null},
       );
 
   @override
@@ -279,8 +277,7 @@ class FirestoreDatabase implements Database {
       );
 
   @override
-  Future<void> setBatchJob(Job job, JobMonthOverview jobMonthOverview,
-      JobYearOverview jobYearOverview) {
+  Future<void> setBatchJob(Job job) {
     var batch = FirebaseFirestore.instance.batch();
 
     var jobToSet = FirebaseFirestore.instance.doc(APIPath.job(
@@ -297,15 +294,16 @@ class FirestoreDatabase implements Database {
       job.workDate.year.toString(),
       job.workDate.month.toString(),
     ));
-    batch.set(monthUpdateToSet, jobMonthOverview.toMap());
+    batch.set(monthUpdateToSet, {null: null});
 
     var yearUpdateToSet = FirebaseFirestore.instance.doc(APIPath.jobYearUpdate(
       uid,
       job.workDate.year.toString(),
     ));
-    batch.set(yearUpdateToSet, jobYearOverview.toMap());
+    batch.set(yearUpdateToSet, {null: null});
 
     batch.commit();
+    return null;
   }
   //  _service.setBatch(
   //       path: APIPath.job(

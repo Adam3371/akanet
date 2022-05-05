@@ -46,7 +46,14 @@ class _RegisterDataState extends State<RegisterData> {
         surname: _surname,
         nickname: _nickname,
         rank: _rank,
+        role: "",
         email: _email,
+        phoneNum: "",
+        hourPerYear: 300,
+        totHours: 0,
+        apprHours: 0,
+        flugberechtigung: false,
+        // fb: [],
         createDateTime: _createDateTime,
       );
       await widget.database.setUser(myUser);

@@ -4,7 +4,6 @@ import 'package:akanet/app/home/register_data.dart';
 import 'package:akanet/common_widgets/show_alert_dialog.dart';
 import 'package:akanet/services/auth.dart';
 import 'package:akanet/services/database.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -66,7 +65,9 @@ class HomePage extends StatelessWidget {
           stream: database.userStream(),
           builder: (context, snapshot) {
             try {
-              snapshot.data.name;
+              print("test");
+              print(snapshot.data.nickname);
+              snapshot.data.nickname;
             } catch (e) {
               print(e);
               return RegisterData(

@@ -28,9 +28,7 @@ class _TimeManagerHomePageDesktopState
   double approvedWorkingHours = 0;
 
   String dropdownValue = "2021";
-  String _jobYears = "2021";
 
-  String _jobMonth = "11";
 
   // Future<void> _delete(BuildContext context, Job job) async {
   //   try {

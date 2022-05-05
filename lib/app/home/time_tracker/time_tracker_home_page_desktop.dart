@@ -1,4 +1,4 @@
-import 'package:akanet/app/home/models/job_month_overview.dart';
+import 'dart:async';
 import 'package:akanet/app/home/time_tracker/work_time_entry_page.dart';
 import 'package:akanet/app/home/jobs/job_list_tile.dart';
 import 'package:akanet/app/home/jobs/list_items_builder.dart';
@@ -28,9 +28,10 @@ class TimeTrackerHomePageDesktop extends StatefulWidget {
 class _TimeTrackerHomePageDesktopState
     extends State<TimeTrackerHomePageDesktop> {
   bool isGettingUpdated = false;
-  double totalWorkingHours = 0;
-  double openWorkingHours = 0;
-  double approvedWorkingHours = 0;
+  double totalHours = 0;
+  double approvedHours = 0;
+  double totWerkHours = 0;
+  double appWerkHours = 0;
   DateTime now = new DateTime.now();
   String dropdownValue;
   String _jobYears;
@@ -40,64 +41,10 @@ class _TimeTrackerHomePageDesktopState
   List<String> _yearsList = [];
   List<String> _monthList = [];
 
-  Future<void> _updateMonthHours() async {
-    try {
-      setState(() {
-        isGettingUpdated = true;
-      });
-
-      double totalHours = 0;
-      double approvedHours = 0;
-      double totWerkHours = 0;
-      double appWerkHours = 0;
-
-      JobMonthOverview jMO = null;
-      final jobs = widget.database.jobsStream(_jobYears, _jobMonth);
-      jobs.listen((j) {
-        for (Job job in j) {
-          totalHours += job.workingHours;
-          if (job.approveStatus == "approved") {
-            approvedHours += job.workingHours;
-          }
-          try {
-            if (job.isWerk) {
-              if (job.approveStatus == "approved") {
-                appWerkHours += job.workingHours;
-              }
-              totWerkHours += job.workingHours;
-            }
-          } catch (e) {
-            print("Internal Error: " + e.toString());
-          }
-        }
-        final jobMonthOverview = JobMonthOverview(
-          totalHours: totalHours,
-          approvedHours: approvedHours,
-          totWerkHours: totWerkHours,
-          appWerkHours: appWerkHours,
-        );
-        jMO = jobMonthOverview;
-        print("hours: " + jobMonthOverview.totalHours.toString());
-
-        setState(() {
-          isGettingUpdated = false;
-        });
-      });
-
-      if (jMO != null) {
-        print("write update hours: " + jMO.totalHours.toString());
-        widget.database.setMonthUpdate(
-            widget.database.getMyUid(), _jobYears, _jobMonth, jMO);
-      } else {
-        print("else");
-      }
-    } catch (e) {
-      print("External Error: " + e);
-    }
-  }
+  StreamSubscription<List<Job>> myStream;
+  Stream<List<Job>> jobstream;
 
   Future<void> _delete(BuildContext context, Job job) async {
-    bool _willBeDeleted = true;
     showDialog(
         context: context,
         builder: (BuildContext ctx) {
@@ -107,7 +54,6 @@ class _TimeTrackerHomePageDesktopState
             actions: [
               TextButton(
                 onPressed: () async {
-                  _willBeDeleted = true;
                   try {
                     await widget.database.deleteJob(job);
                   } on FirebaseException catch (e) {
@@ -125,7 +71,6 @@ class _TimeTrackerHomePageDesktopState
               ),
               TextButton(
                 onPressed: () {
-                  _willBeDeleted = false;
                   Navigator.of(context).pop();
                   setState(() {});
                 },
@@ -136,7 +81,6 @@ class _TimeTrackerHomePageDesktopState
             ],
           );
         });
-    if (_willBeDeleted) {}
   }
 
   @override
@@ -152,20 +96,20 @@ class _TimeTrackerHomePageDesktopState
         _monthList = month;
 
         print(_monthList);
-
-        if (_monthList.contains(now.month.toString())) {
-          _jobMonth = now.month.toString();
-        } else {
+        _jobMonth = now.month.toString();
+        if (!_monthList.contains(now.month.toString())) {
+          widget.database
+              .setMonthUpdate(widget.database.getMyUid(), _jobYears, _jobMonth);
           _jobMonth = _monthList.last;
         }
-
-        _updateMonthHours();
-        // update
+        setState(() {});
       });
     });
     super.initState();
   }
 
+  TextStyle myTextStyle =
+      new TextStyle(fontSize: 20, fontWeight: FontWeight.bold);
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -186,20 +130,22 @@ class _TimeTrackerHomePageDesktopState
           child: Column(
             children: [
               Container(
-                // color: Colors.green,
+                //rgba(96,125,139,255)
+                //rgba(63,81,181,255)
+                color: Color.fromARGB(80, 103, 160, 255),
                 child: Row(
                   children: [
                     Spacer(),
+                    Text(
+                      "Year: ",
+                      style: myTextStyle,
+                    ),
                     DropdownButton<String>(
                       value: _jobYears,
                       icon: const Icon(Icons.arrow_downward),
                       iconSize: 24,
                       elevation: 16,
-                      style: const TextStyle(color: Colors.deepPurple),
-                      underline: Container(
-                        height: 2,
-                        color: Colors.deepPurpleAccent,
-                      ),
+                      style: myTextStyle,
                       onChanged: (String newValue) {
                         _jobYears = newValue;
                         final month = widget.database.jobMonthStream(_jobYears);
@@ -210,7 +156,6 @@ class _TimeTrackerHomePageDesktopState
                                 _monthList.contains(now.month.toString())
                                     ? now.month.toString()
                                     : _monthList.last;
-                            _updateMonthHours();
                           });
                         });
                       },
@@ -223,20 +168,19 @@ class _TimeTrackerHomePageDesktopState
                       }).toList(),
                     ),
                     Spacer(),
+                    Text(
+                      "Month: ",
+                      style: myTextStyle,
+                    ),
                     DropdownButton<String>(
                       value: _jobMonth,
                       icon: const Icon(Icons.arrow_downward),
                       iconSize: 24,
                       elevation: 16,
-                      style: const TextStyle(color: Colors.deepPurple),
-                      underline: Container(
-                        height: 2,
-                        color: Colors.deepPurpleAccent,
-                      ),
+                      style: myTextStyle,
                       onChanged: (String newValue) {
                         setState(() {
                           _jobMonth = newValue;
-                          _updateMonthHours();
                         });
                       },
                       items: _monthList
@@ -248,102 +192,86 @@ class _TimeTrackerHomePageDesktopState
                       }).toList(),
                     ),
                     Spacer(),
-                    isGettingUpdated
-                        ? CircularProgressIndicator()
-                        : Icon(
-                            Icons.check_sharp,
-                            color: Colors.green,
-                          )
                   ],
                 ),
               ),
               Container(
-                color: Colors.black54,
-                height: widget.screenSize.height / 10,
                 child: StreamBuilder(
-                  stream: widget.database.jobsStream(_jobYears, _jobMonth),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return CircularProgressIndicator();
-                    }
-                    // print("++++++" + snapshot.data.toString());
-                    List<Job> jobs = snapshot.data;
-                    totalWorkingHours = 0;
-                    openWorkingHours = 0;
-                    approvedWorkingHours = 0;
-                    for (int i = 0; i < jobs.length; i++) {
-                      // print(jobs[i].description);
-                      Job job = jobs[i];
-                      totalWorkingHours += job.workingHours;
-                      if (job.approveStatus == "approved") {
-                        approvedWorkingHours += job.workingHours;
-                      } else {
-                        openWorkingHours += job.workingHours;
+                    stream: widget.database.jobsStream(_jobYears, _jobMonth),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return CircularProgressIndicator();
                       }
-                    }
-                    TextStyle myTextStyle = new TextStyle(
-                        fontSize: 20, fontWeight: FontWeight.bold);
 
-                    return Container(
-                      color: Colors.blueGrey,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Text(
-                            "Total: $totalWorkingHours h",
-                            style: myTextStyle,
+                      List<Job> jobs = snapshot.data;
+
+                      // print("jobs:" + jobs.toString());
+                      for (int i = 0; i < jobs.length; i++) {
+                        // print(jobs[i].description);
+                        Job job = jobs[i];
+                        totalHours += job.workingHours;
+                        if (job.approveStatus == "approved") {
+                          approvedHours += job.workingHours;
+                        }
+
+                        try {
+                          if (job.isWerk) {
+                            if (job.approveStatus == "approved") {
+                              appWerkHours += job.workingHours;
+                            }
+                            totWerkHours += job.workingHours;
+                          }
+                        } catch (_) {}
+                      }
+
+                      return Container(
+                        color: Colors.black54,
+                        height: widget.screenSize.height / 10,
+                        child: Container(
+                          color: Colors.blueGrey,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              Text(
+                                "Total: $totalHours h",
+                                style: myTextStyle,
+                              ),
+                              Text(
+                                "Werkstatt: $totWerkHours h",
+                                style: myTextStyle,
+                              ),
+                              Text(
+                                "Approved: $approvedHours h",
+                                style: myTextStyle,
+                              ),
+                              Text(
+                                "Appr. Werk: $appWerkHours h",
+                                style: myTextStyle,
+                              ),
+                              Row(
+                                children: [
+                                  Text("Progress"),
+                                  StreamBuilder<Object>(
+                                      stream: widget.database.userStream(),
+                                      builder: (context, snapshot) {
+                                        if (snapshot.connectionState ==
+                                            ConnectionState.waiting) {
+                                          return CircularProgressIndicator();
+                                        }
+
+                                        // MyUser myUser = snapshot.data;
+
+                                        return CircularProgressIndicator(
+                                          value: 0.4,
+                                        );
+                                      }),
+                                ],
+                              ),
+                            ],
                           ),
-                          Text(
-                            "Approved: $approvedWorkingHours h",
-                            style: myTextStyle,
-                          ),
-                          isGettingUpdated
-                              ? CircularProgressIndicator()
-                              : MaterialButton(
-                                  child: Text(
-                                    "update",
-                                    style: myTextStyle,
-                                  ),
-                                  onPressed: () {
-                                    _updateMonthHours();
-                                  },
-                                )
-                          // StreamBuilder(
-                          //   stream: widget.database.jobYearsStream(),
-                          //   builder: (context, snapshot) {
-                          //     if (snapshot.connectionState ==
-                          //         ConnectionState.waiting) {
-                          //       return CircularProgressIndicator();
-                          //     }
-
-                          //     QuerySnapshot snap = snapshot.data;
-                          //     List<DocumentSnapshot> documents = snap.docs;
-                          //     print(documents.length);
-
-                          //     return StreamBuilder(
-                          //         stream:
-                          //             widget.database.jobMonthStream("2022"),
-                          //         builder: (context, snapshot1) {
-                          //           QuerySnapshot snap1 = snapshot1.data;
-                          //           List<DocumentSnapshot> documents1 =
-                          //               snap1.docs;
-                          //               print("instream: " + documents1.length.toString());
-                          //           documents1.forEach(
-                          //             (element) {
-                          //               print(element.id.toString());
-                          //             },
-                          //           );
-
-                          //           return Text("test");
-                          //         });
-
-                          //   },
-                          // ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
+                        ),
+                      );
+                    }),
               ),
               _listBuilder(context, widget.database),
             ],

@@ -1,5 +1,3 @@
-import 'package:akanet/app/home/models/job_month_overview.dart';
-import 'package:akanet/app/home/models/job_year_overview.dart';
 import 'package:akanet/app/home/models/project.dart';
 import 'package:akanet/app/home/models/sub_project.dart';
 import 'package:akanet/common_widgets/date_time_picker.dart';
@@ -100,37 +98,37 @@ class _WorkTimeEntryPageState extends State<WorkTimeEntryPage> {
         // for (Job j in jobList) {
         //   print(" _ " + j.workingHours.toString());
         // }
-        JobMonthOverview jobMonthStat;
-        JobYearOverview jobYearStat;
+        // JobMonthOverview jobMonthStat;
+        // JobYearOverview jobYearStat;
 
-        final jobYearStausReq =
-            await widget.database.jobsYearQuery(_workDate.year.toString());
-        if (jobYearStausReq != null) {
-          jobYearStat = JobYearOverview.fromMap(jobYearStausReq.data(), null);
-        } else {
-          print("2 Error in finding overview");
-          jobYearStat = JobYearOverview(
-            totalHours: 0,
-            approvedHours: 0,
-            totWerkHours: 0,
-            appWerkHours: 0,
-          );
-        }
+        // final jobYearStausReq =
+        //     await widget.database.jobsYearQuery(_workDate.year.toString());
+        // if (jobYearStausReq != null) {
+        //   jobYearStat = JobYearOverview.fromMap(jobYearStausReq.data(), null);
+        // } else {
+        //   print("2 Error in finding overview");
+        //   jobYearStat = JobYearOverview(
+        //     totalHours: 0,
+        //     approvedHours: 0,
+        //     totWerkHours: 0,
+        //     appWerkHours: 0,
+        //   );
+        // }
 
-        final jobMonthStatusReq = await widget.database.jobsMonthQuery(
-            _workDate.year.toString(), _workDate.month.toString());
-        if (jobMonthStatusReq != null) {
-          jobMonthStat =
-              JobMonthOverview.fromMap(jobMonthStatusReq.data(), null);
-        } else {
-          print("1 Error in finding overview");
-          jobMonthStat = JobMonthOverview(
-            totalHours: 0,
-            approvedHours: 0,
-            totWerkHours: 0,
-            appWerkHours: 0,
-          );
-        }
+        // final jobMonthStatusReq = await widget.database.jobsMonthQuery(
+        //     _workDate.year.toString(), _workDate.month.toString());
+        // if (jobMonthStatusReq != null) {
+        //   jobMonthStat =
+        //       JobMonthOverview.fromMap(jobMonthStatusReq.data(), null);
+        // } else {
+        //   print("1 Error in finding overview");
+        //   jobMonthStat = JobMonthOverview(
+        //     totalHours: 0,
+        //     approvedHours: 0,
+        //     totWerkHours: 0,
+        //     appWerkHours: 0,
+        //   );
+        // }
 
         _workingHours = _currentHourValue + (_currentMinutesValue / 60);
 
@@ -148,15 +146,15 @@ class _WorkTimeEntryPageState extends State<WorkTimeEntryPage> {
           isWerk: _isWerk,
         );
 
-        jobMonthStat.totalHours += job.workingHours;
-        jobYearStat.totalHours += job.workingHours;
+        // jobMonthStat.totalHours += job.workingHours;
+        // jobYearStat.totalHours += job.workingHours;
 
-        if (job.isWerk) {
-          jobMonthStat.totWerkHours += job.workingHours;
-          jobYearStat.totWerkHours += job.workingHours;
-        }
+        // if (job.isWerk) {
+        //   jobMonthStat.totWerkHours += job.workingHours;
+        //   jobYearStat.totWerkHours += job.workingHours;
+        // }
 
-        await widget.database.setBatchJob(job, jobMonthStat, jobYearStat);
+        await widget.database.setBatchJob(job);
 
         Navigator.of(context).pop();
         // }
