@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class JobMonthOverview {
-  JobMonthOverview({
+class JobYearOverview {
+  JobYearOverview({
     @required this.totalHours,
     @required this.approvedHours,
     @required this.totWerkHours,
@@ -13,7 +13,7 @@ class JobMonthOverview {
   double totWerkHours;
   double appWerkHours;
 
-  factory JobMonthOverview.fromMap(
+  factory JobYearOverview.fromMap(
       Map<String, dynamic> data, String documentId) {
     if (data == null) {
       return null;
@@ -24,7 +24,7 @@ class JobMonthOverview {
     double totWerkHours = data['totWerkHours'];
     double appWerkHours = data['appWerkHours'];
 
-    return JobMonthOverview(
+    return JobYearOverview(
       totalHours: totalHours,
       approvedHours: approvedHours,
       totWerkHours: totWerkHours,

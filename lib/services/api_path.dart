@@ -9,6 +9,8 @@ class APIPath {
   static String job(String uid, String year, String month, String jobId) => 'users/$uid/years/$year/months/$month/jobs/$jobId';
   static String jobs(String uid, String year, String month) => 'users/$uid/years/$year/months/$month/jobs';
   static String jobYears(String uid) => 'users/$uid/';
+  static String jobMonthUpdate(String uid, String year, String month) => 'users/$uid/years/$year/months/$month';
+  static String jobYearUpdate(String uid, String year) => 'users/$uid/years/$year';
   static String itTicket(String ticketId) => 'itTickets/$ticketId';
   static String itTickets() => 'itTickets';
   static String itTicketsCategory() => 'itTicketCategory';
